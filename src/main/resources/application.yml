@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: new_auth
+
+  profiles:
+    active: ${PROFILE}
+
+api:
+  endpoints:
+    login: ${LOGIN_ENDPOINT}
+    username: ${USERNAME_ENDPOINT}
+    user-id: ${USER_ID_ENDPOINT}
+    save: ${SAVE_ENDPOINT}

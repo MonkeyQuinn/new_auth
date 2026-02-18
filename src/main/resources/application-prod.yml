@@ -1,0 +1,6 @@
+api:
+  base-url: ${BASE_URL}
+  user-name: ${API_USER_NAME}
+  user-pass: ${API_USER_PASS}
+  client-name: ${API_CLIENT_NAME}
+  client-pass: ${API_CLIENT_PASS}
