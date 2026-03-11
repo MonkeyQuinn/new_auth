@@ -174,14 +174,14 @@ public class User {
     }
 
     public void revokePermissionsByAreas(Collection<String> areas) {
-        removeFromPermissions(areas, Permission::area);
+        removeFromPermissionsByValues(areas, Permission::area);
     }
 
     public void revokePermissionsByOperations(Collection<String> operations) {
-        removeFromPermissions(operations, Permission::operation);
+        removeFromPermissionsByValues(operations, Permission::operation);
     }
 
-    private void removeFromPermissions(Collection<String> values, Function<Permission, String> extractor) {
+    private void removeFromPermissionsByValues(Collection<String> values, Function<Permission, String> extractor) {
         if (values == null || values.isEmpty() || this.permissions.isEmpty()) return;
         Set<String> valuesSet = new HashSet<>(values);
         permissions.removeIf(permission -> Objects.nonNull(permission) && valuesSet.contains(extractor.apply(permission)));

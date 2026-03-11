@@ -42,4 +42,6 @@ public interface AuthService {
 
     BatchResult<User> revokeOperations(List<String> usernames, List<String> operations);
 
+    BatchResult<User> revokeAllPermissions(List<String> usernames);
+
 }

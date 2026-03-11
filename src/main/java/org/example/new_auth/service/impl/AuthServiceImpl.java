@@ -130,6 +130,11 @@ public class AuthServiceImpl implements AuthService {
         return modifyAndSaveUsers(usernames, user -> user.revokePermissionsByOperations(streamOfNullableList(operations).toList()));
     }
 
+    @Override
+    public BatchResult<User> revokeAllPermissions(List<String> usernames) {
+        return modifyAndSaveUsers(usernames, user -> user.setPermissions(null));
+    }
+
     private <T> BatchResult<T> findAndExtract(List<String> usernames, Function<Permission, T> extractor) {
         BatchResult<User> usersBatch = findUsersByUsernames(usernames);
         List<User> users = usersBatch.getSuccess();

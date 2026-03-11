@@ -128,6 +128,12 @@ public class ApiController {
         return ResponseEntity.ok(mapBatchResult(users, userMapper::toDtoList));
     }
 
+    @PostMapping("/users:revoke-all-permissions")
+    public ResponseEntity<BatchResult<UserResponse>> revokeAllPermissionsFromUsers(@RequestBody UsernamesRequest body) {
+        BatchResult<User> users = authService.revokeAllPermissions(body.usernames());
+        return ResponseEntity.ok(mapBatchResult(users, userMapper::toDtoList));
+    }
+
     private <T, R> BatchResult<R> mapBatchResult(BatchResult<T> source, Function<List<T>, List<R>> mapper) {
         return new BatchResult<>(mapper.apply(source.getSuccess()), source.getErrors());
     }
