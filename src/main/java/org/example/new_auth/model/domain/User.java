@@ -181,6 +181,10 @@ public class User {
         removeFromPermissionsByValues(operations, Permission::operation);
     }
 
+    public void clearPermissions() {
+        this.permissions.clear();
+    }
+
     private void removeFromPermissionsByValues(Collection<String> values, Function<Permission, String> extractor) {
         if (values == null || values.isEmpty() || this.permissions.isEmpty()) return;
         Set<String> valuesSet = new HashSet<>(values);

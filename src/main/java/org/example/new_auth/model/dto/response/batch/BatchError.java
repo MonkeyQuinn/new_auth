@@ -25,7 +25,7 @@ public record BatchError(String item, String ref, ErrorResponse error) {
             ref = "<ref-error>";
         }
 
-        int status = 0;
+        int status;
         String message = Objects.nonNull(e.getMessage()) ? e.getMessage() : e.getClass().getSimpleName();
         String uri = "";
         String path = "";

@@ -8,40 +8,36 @@ import java.util.List;
 
 public interface AuthService {
 
-    User getUserById(Long id);
-
     User getUserByUsername(String username);
 
     BatchResult<User> findUsersByUsernames(List<String> usernames);
 
     BatchResult<User> findUsersByIds(List<Long> ids);
 
-    BatchResult<String> findUsernamesByRequiredAreas(List<String> usernames, List<String> areas);
+    BatchResult<String> filterUsernamesByAreas(List<String> usernames, List<String> areas);
 
-    BatchResult<Long> findUserIdsByRequiredAreas(List<Long> ids, List<String> areas);
+    BatchResult<Long> filterUserIdsByAreas(List<Long> ids, List<String> areas);
 
-    BatchResult<Long> findUserIdsByRequiredOperations(List<Long> ids, List<String> operations);
+    BatchResult<Long> filterUserIdsByOperations(List<Long> ids, List<String> operations);
 
-    BatchResult<String> extractAreasByUsernames(List<String> usernames);
+    BatchResult<String> extractAreas(List<String> usernames);
 
-    BatchResult<String> extractOperationsByUsernames(List<String> usernames);
+    BatchResult<String> extractOperations(List<String> usernames);
 
-    List<User> filterUsersByUsernames(List<User> users, List<String> usernames);
+    List<User> filterUsersByUsernames(List<User> domainList, List<String> usernames);
 
-    List<String> extractAreasFromUsers(List<User> users);
+    List<String> extractAreasFromUsers(List<User> domainList);
 
-    List<String> extractOperationsFromUsers(List<User> users);
+    List<String> extractOperationsFromUsers(List<User> domainList);
 
-    User saveUser(User user);
+    BatchResult<User> saveUsers(List<User> domainList);
 
-    BatchResult<User> saveUsers(List<User> users);
-
-    BatchResult<User> grantPermissions(List<String> usernames, List<Permission> permissions);
+    BatchResult<User> grantPermissions(List<String> usernames, List<Permission> domainList);
 
     BatchResult<User> revokeAreas(List<String> usernames, List<String> areas);
 
     BatchResult<User> revokeOperations(List<String> usernames, List<String> operations);
 
-    BatchResult<User> revokeAllPermissions(List<String> usernames);
+    BatchResult<User> clearPermissions(List<String> usernames);
 
 }

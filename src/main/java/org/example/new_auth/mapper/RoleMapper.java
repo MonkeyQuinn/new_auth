@@ -36,16 +36,6 @@ public class RoleMapper extends BaseMapper {
         );
     }
 
-    public Role toDomain(ExternalRoleRequest request) {
-        return new Role(
-                request.id(),
-                request.code(),
-                request.description(),
-                request.organization(),
-                this.mapList(request.permissions(), permissionMapper::toDomain)
-        );
-    }
-
     public RoleResponse toDto(Role role) {
         return new RoleResponse(
                 role.getId(),

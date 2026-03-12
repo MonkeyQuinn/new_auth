@@ -4,15 +4,14 @@ import org.example.new_auth.mapper.PermissionMapper;
 import org.example.new_auth.mapper.UserMapper;
 import org.example.new_auth.model.domain.User;
 import org.example.new_auth.model.dto.request.*;
+import org.example.new_auth.model.dto.response.UserIdNamesResponse;
 import org.example.new_auth.model.dto.response.UserResponse;
 import org.example.new_auth.model.dto.response.batch.BatchResult;
 import org.example.new_auth.service.AuthService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Function;
 
 @RestController
@@ -36,70 +35,67 @@ public class ApiController {
     }
 
     @PostMapping("/users:batch-by-usernames")
-    public ResponseEntity<BatchResult<UserResponse>> batchGetUsersByUsernames(@RequestBody UsernamesRequest body) {
+    public ResponseEntity<BatchResult<UserResponse>> batchUsersByUsernames(@RequestBody UsernamesRequest body) {
         BatchResult<User> users = authService.findUsersByUsernames(body.usernames());
         return ResponseEntity.ok(mapBatchResult(users, userMapper::toDtoList));
     }
 
     @PostMapping("/users:batch-by-ids")
-    public ResponseEntity<BatchResult<UserResponse>> batchGetUsersByIds(@RequestBody UserIdsRequest body) {
+    public ResponseEntity<BatchResult<UserResponse>> batchUsersByIds(@RequestBody UserIdsRequest body) {
         BatchResult<User> users = authService.findUsersByIds(body.ids());
         return ResponseEntity.ok(mapBatchResult(users, userMapper::toDtoList));
     }
 
-    @PostMapping("/users:filter-usernames-by-areas")
+    @PostMapping("/usernames:filter-by-areas")
     public ResponseEntity<BatchResult<String>> filterUsernamesByAreas(@RequestBody UsernamesAreasRequest body) {
-        BatchResult<String> areas = authService.findUsernamesByRequiredAreas(body.usernames(), body.areas());
+        BatchResult<String> areas = authService.filterUsernamesByAreas(body.usernames(), body.areas());
         return ResponseEntity.ok(areas);
     }
 
-    @PostMapping("/users:filter-ids-by-areas")
+    @PostMapping("/user-ids:filter-by-areas")
     public ResponseEntity<BatchResult<Long>> filterUserIdsByAreas(@RequestBody UserIdsAreasRequest body) {
-        BatchResult<Long> areas = authService.findUserIdsByRequiredAreas(body.ids(), body.areas());
+        BatchResult<Long> areas = authService.filterUserIdsByAreas(body.ids(), body.areas());
         return ResponseEntity.ok(areas);
     }
 
-    @PostMapping("/users:filter-ids-by-operations")
+    @PostMapping("/user-ids:filter-by-operations")
     public ResponseEntity<BatchResult<Long>> filterUserIdsByOperations(@RequestBody UserIdsOperationsRequest body) {
-        BatchResult<Long> areas = authService.findUserIdsByRequiredOperations(body.ids(), body.operations());
+        BatchResult<Long> areas = authService.filterUserIdsByOperations(body.ids(), body.operations());
         return ResponseEntity.ok(areas);
     }
 
     @PostMapping("/areas:batch-extract")
-    public ResponseEntity<BatchResult<String>> batchExtractAreasByUsernames(@RequestBody UsernamesRequest body) {
-        BatchResult<String> areas = authService.extractAreasByUsernames(body.usernames());
+    public ResponseEntity<BatchResult<String>> batchExtractAreas(@RequestBody UsernamesRequest body) {
+        BatchResult<String> areas = authService.extractAreas(body.usernames());
         return ResponseEntity.ok(areas);
     }
 
     @PostMapping("/operations:batch-extract")
-    public ResponseEntity<BatchResult<String>> batchExtractOperationsByUsernames(@RequestBody UsernamesRequest body) {
-        BatchResult<String> operations = authService.extractOperationsByUsernames(body.usernames());
+    public ResponseEntity<BatchResult<String>> batchExtractOperations(@RequestBody UsernamesRequest body) {
+        BatchResult<String> operations = authService.extractOperations(body.usernames());
         return ResponseEntity.ok(operations);
     }
 
-    @PostMapping("/users:filter-local")
-    public ResponseEntity<List<UserResponse>> filterUsersLocal(@RequestBody UsersUsernamesRequest body) {
+    @PostMapping("/users/filter")
+    public ResponseEntity<List<UserResponse>> filterUsers(@RequestBody UsersUsernamesRequest body) {
         List<User> users = authService.filterUsersByUsernames(userMapper.toDomainList(body.users()), body.usernames());
         return ResponseEntity.ok(userMapper.toDtoList(users));
     }
 
-    @PostMapping("/usernames:extract-local")
-    public ResponseEntity<Map<Long, List<String>>> extractUsersLocal(@RequestBody UsersRequest body) {
-        Map<Long, List<String>> usernames = new HashMap<>();
-        for (UserRequest user : body.users()) {
-            usernames.put(user.id(), user.usernames());
-        }
-        return ResponseEntity.ok(usernames);
+    @PostMapping("/usernames/extract")
+    public ResponseEntity<List<UserIdNamesResponse>> extractUserIds(@RequestBody UsersRequest body) {
+        List<UserIdNamesResponse> userIdNames = userMapper.toUserIdNamesList(body.users());
+        return ResponseEntity.ok(userIdNames);
     }
 
-    @PostMapping("/areas:extract-local")
-    public ResponseEntity<List<String>> extractAreasLocal(@RequestBody UsersRequest body) {
+    @PostMapping("/areas/extract")
+    public ResponseEntity<List<String>> extractAreas(@RequestBody UsersRequest body) {
         List<String> areas = authService.extractAreasFromUsers(userMapper.toDomainList(body.users()));
         return ResponseEntity.ok(areas);
     }
 
-    @PostMapping("/operations:extract-local")
-    public ResponseEntity<List<String>> extractOperationsLocal(@RequestBody UsersRequest body) {
+    @PostMapping("/operations/extract")
+    public ResponseEntity<List<String>> extractOperations(@RequestBody UsersRequest body) {
         List<String> operations = authService.extractOperationsFromUsers(userMapper.toDomainList(body.users()));
         return ResponseEntity.ok(operations);
     }
@@ -128,9 +124,9 @@ public class ApiController {
         return ResponseEntity.ok(mapBatchResult(users, userMapper::toDtoList));
     }
 
-    @PostMapping("/users:revoke-all-permissions")
-    public ResponseEntity<BatchResult<UserResponse>> revokeAllPermissionsFromUsers(@RequestBody UsernamesRequest body) {
-        BatchResult<User> users = authService.revokeAllPermissions(body.usernames());
+    @PostMapping("/users:clear-permissions")
+    public ResponseEntity<BatchResult<UserResponse>> clearPermissions(@RequestBody UsernamesRequest body) {
+        BatchResult<User> users = authService.clearPermissions(body.usernames());
         return ResponseEntity.ok(mapBatchResult(users, userMapper::toDtoList));
     }
 

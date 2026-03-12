@@ -2,6 +2,7 @@ package org.example.new_auth.mapper;
 
 import org.example.new_auth.model.domain.User;
 import org.example.new_auth.model.dto.request.UserRequest;
+import org.example.new_auth.model.dto.response.UserIdNamesResponse;
 import org.example.new_auth.model.dto.response.UserResponse;
 import org.example.new_auth.model.external.request.ExternalUserRequest;
 import org.example.new_auth.model.external.response.ExternalUserResponse;
@@ -36,25 +37,6 @@ public class UserMapper extends BaseMapper {
                 response.usernames(),
                 this.mapList(response.permissions(), permissionMapper::toDomain),
                 this.mapList(response.roles(), roleMapper::toDomain)
-        );
-    }
-
-    public User toDomain(ExternalUserRequest request) {
-        return new User(
-                request.id(),
-                request.clientId(),
-                request.status(),
-                request.passChangeNeeded(),
-                request.twoFactorEnabled(),
-                request.inheritClient(),
-                request.firstname(),
-                request.lastname(),
-                request.refreshTokenTtl(),
-                request.accessTokenTtl(),
-                request.tokenCount(),
-                request.usernames(),
-                this.mapList(request.permissions(), permissionMapper::toDomain),
-                this.mapList(request.roles(), roleMapper::toDomain)
         );
     }
 
@@ -115,12 +97,20 @@ public class UserMapper extends BaseMapper {
         );
     }
 
+    public UserIdNamesResponse toUserIdNames(UserRequest body) {
+        return new UserIdNamesResponse(body.id(), body.usernames());
+    }
+
     public List<User> toDomainList(List<UserRequest> userRequests) {
         return this.mapList(userRequests, this::toDomain);
     }
 
     public List<UserResponse> toDtoList(List<User> users) {
         return this.mapList(users, this::toDto);
+    }
+
+    public List<UserIdNamesResponse> toUserIdNamesList(List<UserRequest> userRequests) {
+        return this.mapList(userRequests, this::toUserIdNames);
     }
 
 }

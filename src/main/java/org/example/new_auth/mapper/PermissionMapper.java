@@ -28,14 +28,6 @@ public class PermissionMapper extends BaseMapper {
         );
     }
 
-    public Permission toDomain(ExternalPermissionRequest request) {
-        return new Permission(
-                request.area(),
-                request.topic(),
-                request.operation()
-        );
-    }
-
     public PermissionResponse toDto(Permission permission) {
         return new PermissionResponse(
                 permission.area(),
