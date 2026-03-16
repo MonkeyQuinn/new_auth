@@ -34,13 +34,13 @@ public class BatchServiceImpl implements BatchService {
     @Override
     public BatchResult<User> findUsersByUsernames(List<String> usernames) {
         return processor.batchMap(
-                nonNullStream(usernames).toList(), userService::getUserByUsername, Function.identity(), nullExtractor()
+                safeList(usernames), userService::getUserByUsername, Function.identity(), nullExtractor()
         );
     }
 
     @Override
     public BatchResult<User> findUsersByIds(List<Long> ids) {
-        return processor.batchMap(nonNullStream(ids).toList(), userService::getUserById, nullExtractor(), String::valueOf);
+        return processor.batchMap(safeList(ids), userService::getUserById, nullExtractor(), String::valueOf);
     }
 
     @Override
@@ -97,19 +97,19 @@ public class BatchServiceImpl implements BatchService {
     @Override
     public BatchResult<User> saveUsers(List<User> users) {
         return processor.batchMap(
-                nonNullStream(users).toList(), userService::saveUser, nullExtractor(), user -> String.valueOf(user.getId())
+                safeList(users), userService::saveUser, nullExtractor(), user -> String.valueOf(user.getId())
         );
     }
 
     private BatchResult<User> modifyAndSaveUsers(Collection<String> usernames, Function<User, User> modifier) {
         BatchResult<UserItem> itemsBatch = processor.batchMap(
-                nonNullStream(usernames).toList(),
+                safeList(usernames),
                 username -> new UserItem(username, userService.getUserByUsername(username)),
                 Function.identity(),
                 nullExtractor());
 
         BatchResult<User> savedBatch = processor.batchMap(
-                nonNullStream(itemsBatch.getSuccess()).toList(),
+                safeList(itemsBatch.getSuccess()),
                 item -> userService.saveUser(modifier.apply(item.user())),
                 UserItem::username,
                 item -> String.valueOf(item.user().getId()));
