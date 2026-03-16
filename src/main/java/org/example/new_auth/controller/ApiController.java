@@ -1,13 +1,13 @@
 package org.example.new_auth.controller;
 
+import org.example.new_auth.dto.request.*;
 import org.example.new_auth.mapper.PermissionMapper;
 import org.example.new_auth.mapper.UserMapper;
-import org.example.new_auth.model.domain.User;
-import org.example.new_auth.model.dto.request.*;
-import org.example.new_auth.model.dto.response.UserIdNamesResponse;
-import org.example.new_auth.model.dto.response.UserResponse;
-import org.example.new_auth.model.dto.response.batch.BatchResult;
-import org.example.new_auth.service.AuthService;
+import org.example.new_auth.domain.User;
+import org.example.new_auth.dto.response.UserIdNamesResponse;
+import org.example.new_auth.dto.response.UserResponse;
+import org.example.new_auth.batch.BatchResult;
+import org.example.new_auth.service.auth.AuthService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

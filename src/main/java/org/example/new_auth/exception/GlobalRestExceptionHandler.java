@@ -1,7 +1,7 @@
 package org.example.new_auth.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
-import org.example.new_auth.model.dto.response.ErrorResponse;
+import org.example.new_auth.dto.response.ErrorResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;

@@ -1,11 +1,11 @@
 package org.example.new_auth.mapper;
 
-import org.example.new_auth.model.domain.User;
-import org.example.new_auth.model.dto.request.UserRequest;
-import org.example.new_auth.model.dto.response.UserIdNamesResponse;
-import org.example.new_auth.model.dto.response.UserResponse;
-import org.example.new_auth.model.external.request.ExternalUserRequest;
-import org.example.new_auth.model.external.response.ExternalUserResponse;
+import org.example.new_auth.domain.User;
+import org.example.new_auth.dto.request.UserRequest;
+import org.example.new_auth.dto.response.UserIdNamesResponse;
+import org.example.new_auth.dto.response.UserResponse;
+import org.example.new_auth.external.request.ExternalUserRequest;
+import org.example.new_auth.external.response.ExternalUserResponse;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

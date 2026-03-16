@@ -1,8 +1,8 @@
 package org.example.new_auth.client;
 
 import org.example.new_auth.exception.ApiException;
-import org.example.new_auth.model.domain.Login;
-import org.example.new_auth.model.domain.Token;
+import org.example.new_auth.domain.Login;
+import org.example.new_auth.domain.Token;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
@@ -46,18 +46,18 @@ public class TokenManager {
             }
         }
 
-        return accessToken.getHash();
+        return accessToken.hash();
     }
 
     private void refresh() {
         Login login = authClient.login();
-        this.accessToken = login.getAccess();
+        this.accessToken = login.access();
     }
 
     private boolean tokenIsInvalid() {
         return accessToken == null
-                || accessToken.getHash() == null
-                || accessToken.getHash().isBlank()
+                || accessToken.hash() == null
+                || accessToken.hash().isBlank()
                 || accessToken.isExpired();
     }
 

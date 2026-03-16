@@ -1,10 +1,10 @@
 package org.example.new_auth.mapper;
 
-import org.example.new_auth.model.domain.Role;
-import org.example.new_auth.model.dto.request.RoleRequest;
-import org.example.new_auth.model.dto.response.RoleResponse;
-import org.example.new_auth.model.external.request.ExternalRoleRequest;
-import org.example.new_auth.model.external.response.ExternalRoleResponse;
+import org.example.new_auth.domain.Role;
+import org.example.new_auth.dto.request.RoleRequest;
+import org.example.new_auth.dto.response.RoleResponse;
+import org.example.new_auth.external.request.ExternalRoleRequest;
+import org.example.new_auth.external.response.ExternalRoleResponse;
 import org.springframework.stereotype.Component;
 
 @Component

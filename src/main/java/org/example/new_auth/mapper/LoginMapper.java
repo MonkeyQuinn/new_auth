@@ -1,7 +1,7 @@
 package org.example.new_auth.mapper;
 
-import org.example.new_auth.model.domain.Login;
-import org.example.new_auth.model.external.response.ExternalLoginResponse;
+import org.example.new_auth.domain.Login;
+import org.example.new_auth.external.response.ExternalLoginResponse;
 import org.springframework.stereotype.Component;
 
 @Component

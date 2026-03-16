@@ -1,10 +1,10 @@
 package org.example.new_auth.mapper;
 
-import org.example.new_auth.model.domain.Permission;
-import org.example.new_auth.model.dto.request.PermissionRequest;
-import org.example.new_auth.model.dto.response.PermissionResponse;
-import org.example.new_auth.model.external.request.ExternalPermissionRequest;
-import org.example.new_auth.model.external.response.ExternalPermissionResponse;
+import org.example.new_auth.domain.Permission;
+import org.example.new_auth.dto.request.PermissionRequest;
+import org.example.new_auth.dto.response.PermissionResponse;
+import org.example.new_auth.external.request.ExternalPermissionRequest;
+import org.example.new_auth.external.response.ExternalPermissionResponse;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
