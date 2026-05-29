@@ -51,6 +51,11 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    public BatchResult<Long> extractUserIds(List<String> usernames) {
+        return batchService.extractUserIdsByUsernames(usernames);
+    }
+
+    @Override
     public BatchResult<String> extractAreas(List<String> usernames) {
         return batchService.extractAreasByUsernames(usernames);
     }

@@ -64,6 +64,12 @@ public class ApiController {
         return ResponseEntity.ok(areas);
     }
 
+    @PostMapping("/user-ids:batch-extract")
+    public ResponseEntity<BatchResult<Long>> batchExtractUserIdsByNames(@RequestBody UsernamesRequest body) {
+        BatchResult<Long> areas = authService.extractUserIds(body.usernames());
+        return ResponseEntity.ok(areas);
+    }
+
     @PostMapping("/areas:batch-extract")
     public ResponseEntity<BatchResult<String>> batchExtractAreas(@RequestBody UsernamesRequest body) {
         BatchResult<String> areas = authService.extractAreas(body.usernames());

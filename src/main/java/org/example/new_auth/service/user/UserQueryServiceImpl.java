@@ -51,12 +51,12 @@ public class UserQueryServiceImpl implements UserQueryService {
 
     @Override
     public List<String> extractAreasFromUsers(List<User> users) {
-        return extractUniqueFromUsers(users, Permission::area);
+        return extractUniqueFromUsers(users, user -> nonNullStream(user.getPermissions()), Permission::area);
     }
 
     @Override
     public List<String> extractOperationsFromUsers(List<User> users) {
-        return extractUniqueFromUsers(users, Permission::operation);
+        return extractUniqueFromUsers(users, user -> nonNullStream(user.getPermissions()), Permission::operation);
     }
 
 }

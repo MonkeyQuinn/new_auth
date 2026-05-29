@@ -84,13 +84,18 @@ public class BatchServiceImpl implements BatchService {
     }
 
     @Override
+    public BatchResult<Long> extractUserIdsByUsernames(List<String> usernames) {
+        return findAndExtract(usernames, user -> Stream.of(user.getId()), Function.identity());
+    }
+
+    @Override
     public BatchResult<String> extractAreasByUsernames(List<String> usernames) {
-        return findAndExtract(usernames, Permission::area);
+        return findAndExtract(usernames, user -> nonNullStream(user.getPermissions()), Permission::area);
     }
 
     @Override
     public BatchResult<String> extractOperationsByUsernames(List<String> usernames) {
-        return findAndExtract(usernames, Permission::operation);
+        return findAndExtract(usernames, user -> nonNullStream(user.getPermissions()), Permission::operation);
     }
 
     @Override
@@ -150,11 +155,11 @@ public class BatchServiceImpl implements BatchService {
         return userValues.containsAll(required);
     }
 
-    private <T> BatchResult<T> findAndExtract(List<String> usernames, Function<Permission, T> extractor) {
+    private <R, T> BatchResult<T> findAndExtract(List<String> usernames, Function<User, Stream<R>> extractor, Function<R, T> mapper) {
         BatchResult<User> usersBatch = findUsersByUsernames(usernames);
         List<User> users = usersBatch.getSuccess();
 
-        List<T> success = extractUniqueFromUsers(users, extractor);
+        List<T> success = extractUniqueFromUsers(users, extractor, mapper);
         List<BatchError> errors = new ArrayList<>(usersBatch.getErrors());
 
         return new BatchResult<>(success, errors);

@@ -26,6 +26,8 @@ public interface BatchService {
 
     BatchResult<Long> filterUserIdsByOperations(List<Long> ids, List<String> operations);
 
+    BatchResult<Long> extractUserIdsByUsernames(List<String> usernames);
+
     BatchResult<String> extractAreasByUsernames(List<String> usernames);
 
     BatchResult<String> extractOperationsByUsernames(List<String> usernames);

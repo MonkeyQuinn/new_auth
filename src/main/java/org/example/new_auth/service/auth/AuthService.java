@@ -20,6 +20,8 @@ public interface AuthService {
 
     BatchResult<Long> filterUserIdsByOperations(List<Long> ids, List<String> operations);
 
+    BatchResult<Long> extractUserIds(List<String> usernames);
+
     BatchResult<String> extractAreas(List<String> usernames);
 
     BatchResult<String> extractOperations(List<String> usernames);

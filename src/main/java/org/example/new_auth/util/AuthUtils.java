@@ -1,6 +1,5 @@
 package org.example.new_auth.util;
 
-import org.example.new_auth.domain.Permission;
 import org.example.new_auth.domain.User;
 
 import java.util.Collection;
@@ -25,10 +24,10 @@ public final class AuthUtils {
                 .flatMap(Collection::stream);
     }
 
-    public static <T> List<T> extractUniqueFromUsers(Collection<User> users, Function<Permission, T> extractor) {
+    public static <R, T> List<T> extractUniqueFromUsers(Collection<User> users, Function<User, Stream<R>> extractor, Function<R, T> mapper) {
         return nonNullStream(users)
-                .flatMap(user -> nonNullStream(user.getPermissions()))
-                .map(extractor)
+                .flatMap(extractor)
+                .map(mapper)
                 .distinct()
                 .toList();
     }
