@@ -43,23 +43,33 @@ public class BatchServiceImpl implements BatchService {
     }
 
     @Override
-    public BatchResult<User> grantPermissions(List<String> usernames, List<Permission> permissions) {
-        return modifyAndSaveUsers(usernames, user -> permissionService.grantPermissions(user, permissions));
+    public BatchResult<User> grantPermissionsToName(List<String> usernames, List<Permission> permissions) {
+        return modifyAndSaveUsers(getUserItemByName(usernames), user -> permissionService.grantPermissions(user, permissions));
     }
 
     @Override
-    public BatchResult<User> revokeAreas(List<String> usernames, List<String> areas) {
-        return modifyAndSaveUsers(usernames, user -> permissionService.revokeAreas(user, areas));
+    public BatchResult<User> grantPermissionsToId(List<Long> ids, List<Permission> permissions) {
+        return modifyAndSaveUsers(getUserItemById(ids), user -> permissionService.grantPermissions(user, permissions));
     }
 
     @Override
-    public BatchResult<User> revokeOperations(List<String> usernames, List<String> operations) {
-        return modifyAndSaveUsers(usernames, user -> permissionService.revokeOperations(user, operations));
+    public BatchResult<User> revokeAreasByNames(List<String> usernames, List<String> areas) {
+        return modifyAndSaveUsers(getUserItemByName(usernames), user -> permissionService.revokeAreas(user, areas));
+    }
+
+    @Override
+    public BatchResult<User> revokeOperationsByNames(List<String> usernames, List<String> operations) {
+        return modifyAndSaveUsers(getUserItemByName(usernames), user -> permissionService.revokeOperations(user, operations));
+    }
+
+    @Override
+    public BatchResult<User> revokeAreasByIds(List<Long> ids, List<String> areas) {
+        return modifyAndSaveUsers(getUserItemById(ids), user -> permissionService.revokeAreas(user, areas));
     }
 
     @Override
     public BatchResult<User> clearPermissions(List<String> usernames) {
-        return modifyAndSaveUsers(usernames, permissionService::clearPermissions);
+        return modifyAndSaveUsers(getUserItemByName(usernames), permissionService::clearPermissions);
     }
 
     @Override
@@ -105,22 +115,32 @@ public class BatchServiceImpl implements BatchService {
         );
     }
 
-    private BatchResult<User> modifyAndSaveUsers(Collection<String> usernames, Function<User, User> modifier) {
-        BatchResult<UserItem> itemsBatch = processor.batchMap(
-                safeList(usernames),
-                username -> new UserItem(username, userService.getUserByUsername(username)),
-                Function.identity(),
-                nullExtractor());
-
+    private BatchResult<User> modifyAndSaveUsers(BatchResult<UserItem> itemsBatch, Function<User, User> modifier) {
         BatchResult<User> savedBatch = processor.batchMap(
                 safeList(itemsBatch.getSuccess()),
                 item -> userService.saveUser(modifier.apply(item.user())),
-                UserItem::username,
+                UserItem::item,
                 item -> String.valueOf(item.user().getId()));
 
         savedBatch.addErrors(itemsBatch.getErrors());
 
         return savedBatch;
+    }
+
+    private BatchResult<UserItem> getUserItemByName(Collection<String> usernames) {
+        return processor.batchMap(
+                safeList(usernames),
+                username -> new UserItem(username, userService.getUserByUsername(username)),
+                Function.identity(),
+                nullExtractor());
+    }
+
+    private BatchResult<UserItem> getUserItemById(Collection<Long> ids) {
+        return processor.batchMap(
+                safeList(ids),
+                id -> new UserItem(Objects.toString(id), userService.getUserById(id)),
+                nullExtractor(),
+                Objects::toString);
     }
 
     private <T> BatchResult<T> findByRequired(Collection<T> source,

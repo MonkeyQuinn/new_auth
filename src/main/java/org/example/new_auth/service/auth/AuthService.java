@@ -34,12 +34,16 @@ public interface AuthService {
 
     BatchResult<User> saveUsers(List<User> domainList);
 
-    BatchResult<User> grantPermissions(List<String> usernames, List<Permission> domainList);
+    BatchResult<User> grantPermissionsToName(List<String> usernames, List<Permission> permissions);
 
-    BatchResult<User> revokeAreas(List<String> usernames, List<String> areas);
+    BatchResult<User> grantPermissionsToId(List<Long> ids, List<Permission> permissions);
 
-    BatchResult<User> revokeOperations(List<String> usernames, List<String> operations);
+    BatchResult<User> revokeAreasByNames(List<String> usernames, List<String> areas);
 
-    BatchResult<User> clearPermissions(List<String> usernames);
+    BatchResult<User> revokeOperationsByNames(List<String> usernames, List<String> operations);
+
+    BatchResult<User> revokeAreasByIds(List<Long> ids, List<String> areas);
+
+    BatchResult<User> clearPermissionsByNames(List<String> usernames);
 
 }

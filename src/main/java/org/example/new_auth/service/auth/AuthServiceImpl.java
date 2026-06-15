@@ -86,22 +86,32 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public BatchResult<User> grantPermissions(List<String> usernames, List<Permission> domainList) {
-        return batchService.grantPermissions(usernames, domainList);
+    public BatchResult<User> grantPermissionsToName(List<String> usernames, List<Permission> permissions) {
+        return batchService.grantPermissionsToName(usernames, permissions);
     }
 
     @Override
-    public BatchResult<User> revokeAreas(List<String> usernames, List<String> areas) {
-        return batchService.revokeAreas(usernames, areas);
+    public BatchResult<User> grantPermissionsToId(List<Long> ids, List<Permission> permissions) {
+        return batchService.grantPermissionsToId(ids, permissions);
     }
 
     @Override
-    public BatchResult<User> revokeOperations(List<String> usernames, List<String> operations) {
-        return batchService.revokeOperations(usernames, operations);
+    public BatchResult<User> revokeAreasByNames(List<String> usernames, List<String> areas) {
+        return batchService.revokeAreasByNames(usernames, areas);
     }
 
     @Override
-    public BatchResult<User> clearPermissions(List<String> usernames) {
+    public BatchResult<User> revokeOperationsByNames(List<String> usernames, List<String> operations) {
+        return batchService.revokeOperationsByNames(usernames, operations);
+    }
+
+    @Override
+    public BatchResult<User> revokeAreasByIds(List<Long> ids, List<String> areas) {
+        return batchService.revokeAreasByIds(ids, areas);
+    }
+
+    @Override
+    public BatchResult<User> clearPermissionsByNames(List<String> usernames) {
         return batchService.clearPermissions(usernames);
     }
 
