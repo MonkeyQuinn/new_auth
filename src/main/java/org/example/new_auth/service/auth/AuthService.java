@@ -8,11 +8,13 @@ import java.util.List;
 
 public interface AuthService {
 
-    User getUserByUsername(String username);
+    User getUserByUsername(String name);
 
-    BatchResult<User> findUsersByUsernames(List<String> usernames);
+    User getUserById(Long id);
 
-    BatchResult<User> findUsersByIds(List<Long> ids);
+    BatchResult<User> getUsersByUsernames(List<String> usernames);
+
+    BatchResult<User> getUsersByIds(List<Long> ids);
 
     BatchResult<String> filterUsernamesByAreas(List<String> usernames, List<String> areas);
 
@@ -20,30 +22,30 @@ public interface AuthService {
 
     BatchResult<Long> filterUserIdsByOperations(List<Long> ids, List<String> operations);
 
-    BatchResult<Long> extractUserIds(List<String> usernames);
+    BatchResult<Long> getUserIdsByUsernames(List<String> usernames);
 
-    BatchResult<String> extractAreas(List<String> usernames);
+    BatchResult<String> getAreasByUsernames(List<String> usernames);
 
-    BatchResult<String> extractOperations(List<String> usernames);
+    BatchResult<String> getOperationsByUsernames(List<String> usernames);
 
     List<User> filterUsersByUsernames(List<User> domainList, List<String> usernames);
 
-    List<String> extractAreasFromUsers(List<User> domainList);
+    List<String> extractAreas(List<User> domainList);
 
-    List<String> extractOperationsFromUsers(List<User> domainList);
+    List<String> extractOperations(List<User> domainList);
 
     BatchResult<User> saveUsers(List<User> domainList);
 
-    BatchResult<User> grantPermissionsToName(List<String> usernames, List<Permission> permissions);
+    BatchResult<User> grantPermissionsByUsernames(List<String> usernames, List<Permission> permissions);
 
-    BatchResult<User> grantPermissionsToId(List<Long> ids, List<Permission> permissions);
+    BatchResult<User> grantPermissionsByUserIds(List<Long> ids, List<Permission> permissions);
 
-    BatchResult<User> revokeAreasByNames(List<String> usernames, List<String> areas);
+    BatchResult<User> revokeAreasByUsernames(List<String> usernames, List<String> areas);
 
-    BatchResult<User> revokeOperationsByNames(List<String> usernames, List<String> operations);
+    BatchResult<User> revokeOperationsByUsernames(List<String> usernames, List<String> operations);
 
-    BatchResult<User> revokeAreasByIds(List<Long> ids, List<String> areas);
+    BatchResult<User> revokeAreasByUserIds(List<Long> ids, List<String> areas);
 
-    BatchResult<User> clearPermissionsByNames(List<String> usernames);
+    BatchResult<User> clearPermissionsByUsernames(List<String> usernames);
 
 }

@@ -8,7 +8,7 @@ public interface UserQueryService {
 
     User getUserById(Long id);
 
-    User getUserByUsername(String username);
+    User getUserByName(String username);
 
     User saveUser(User user);
 

@@ -21,17 +21,22 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public User getUserByUsername(String username) {
-        return userService.getUserByUsername(username);
+    public User getUserByUsername(String name) {
+        return userService.getUserByName(name);
     }
 
     @Override
-    public BatchResult<User> findUsersByUsernames(List<String> usernames) {
+    public User getUserById(Long id) {
+        return userService.getUserById(id);
+    }
+
+    @Override
+    public BatchResult<User> getUsersByUsernames(List<String> usernames) {
         return batchService.findUsersByUsernames(usernames);
     }
 
     @Override
-    public BatchResult<User> findUsersByIds(List<Long> ids) {
+    public BatchResult<User> getUsersByIds(List<Long> ids) {
         return batchService.findUsersByIds(ids);
     }
 
@@ -51,17 +56,17 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public BatchResult<Long> extractUserIds(List<String> usernames) {
+    public BatchResult<Long> getUserIdsByUsernames(List<String> usernames) {
         return batchService.extractUserIdsByUsernames(usernames);
     }
 
     @Override
-    public BatchResult<String> extractAreas(List<String> usernames) {
+    public BatchResult<String> getAreasByUsernames(List<String> usernames) {
         return batchService.extractAreasByUsernames(usernames);
     }
 
     @Override
-    public BatchResult<String> extractOperations(List<String> usernames) {
+    public BatchResult<String> getOperationsByUsernames(List<String> usernames) {
         return batchService.extractOperationsByUsernames(usernames);
     }
 
@@ -71,12 +76,12 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public List<String> extractAreasFromUsers(List<User> domainList) {
+    public List<String> extractAreas(List<User> domainList) {
         return userService.extractAreasFromUsers(domainList);
     }
 
     @Override
-    public List<String> extractOperationsFromUsers(List<User> domainList) {
+    public List<String> extractOperations(List<User> domainList) {
         return userService.extractOperationsFromUsers(domainList);
     }
 
@@ -86,32 +91,32 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public BatchResult<User> grantPermissionsToName(List<String> usernames, List<Permission> permissions) {
+    public BatchResult<User> grantPermissionsByUsernames(List<String> usernames, List<Permission> permissions) {
         return batchService.grantPermissionsToName(usernames, permissions);
     }
 
     @Override
-    public BatchResult<User> grantPermissionsToId(List<Long> ids, List<Permission> permissions) {
+    public BatchResult<User> grantPermissionsByUserIds(List<Long> ids, List<Permission> permissions) {
         return batchService.grantPermissionsToId(ids, permissions);
     }
 
     @Override
-    public BatchResult<User> revokeAreasByNames(List<String> usernames, List<String> areas) {
+    public BatchResult<User> revokeAreasByUsernames(List<String> usernames, List<String> areas) {
         return batchService.revokeAreasByNames(usernames, areas);
     }
 
     @Override
-    public BatchResult<User> revokeOperationsByNames(List<String> usernames, List<String> operations) {
+    public BatchResult<User> revokeOperationsByUsernames(List<String> usernames, List<String> operations) {
         return batchService.revokeOperationsByNames(usernames, operations);
     }
 
     @Override
-    public BatchResult<User> revokeAreasByIds(List<Long> ids, List<String> areas) {
+    public BatchResult<User> revokeAreasByUserIds(List<Long> ids, List<String> areas) {
         return batchService.revokeAreasByIds(ids, areas);
     }
 
     @Override
-    public BatchResult<User> clearPermissionsByNames(List<String> usernames) {
+    public BatchResult<User> clearPermissionsByUsernames(List<String> usernames) {
         return batchService.clearPermissions(usernames);
     }
 

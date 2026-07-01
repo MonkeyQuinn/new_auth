@@ -29,7 +29,7 @@ public class UserQueryServiceImpl implements UserQueryService {
     }
 
     @Override
-    public User getUserByUsername(String username) {
+    public User getUserByName(String username) {
         return tokenManager.withTokenRetryOnce(token -> authClient.getUser(username, token));
     }
 

@@ -33,7 +33,7 @@ public class BatchServiceImpl implements BatchService {
     @Override
     public BatchResult<User> findUsersByUsernames(List<String> usernames) {
         return processor.batchMap(
-                safeList(usernames), userService::getUserByUsername, Function.identity(), nullExtractor()
+                safeList(usernames), userService::getUserByName, Function.identity(), nullExtractor()
         );
     }
 
@@ -130,7 +130,7 @@ public class BatchServiceImpl implements BatchService {
     private BatchResult<UserItem> getUserItemByName(Collection<String> usernames) {
         return processor.batchMap(
                 safeList(usernames),
-                username -> new UserItem(username, userService.getUserByUsername(username)),
+                username -> new UserItem(username, userService.getUserByName(username)),
                 Function.identity(),
                 nullExtractor());
     }
