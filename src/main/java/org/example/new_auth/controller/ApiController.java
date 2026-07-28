@@ -95,8 +95,8 @@ public class ApiController {
     }
 
     @PostMapping("/usernames/filter/by-operations")
-    public ResponseEntity<BatchResult<Long>> filterUsernamesByOperations(@RequestBody UsernamesOperationsRequest body) {
-        BatchResult<Long> usernames = authService.filterUsernamesByOperations(body.usernames(), body.operations());
+    public ResponseEntity<BatchResult<String>> filterUsernamesByOperations(@RequestBody UsernamesOperationsRequest body) {
+        BatchResult<String> usernames = authService.filterUsernamesByOperations(body.usernames(), body.operations());
         return ResponseEntity.ok(usernames);
     }
 

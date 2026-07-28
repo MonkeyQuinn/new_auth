@@ -8,14 +8,14 @@ public interface UserQueryService {
 
     User getUserById(Long id);
 
-    User getUserByName(String username);
+    User getUserByUsername(String username);
 
     User saveUser(User user);
 
     List<User> filterUsersByUsernames(List<User> users, List<String> usernames);
 
-    List<String> extractAreasFromUsers(List<User> users);
+    List<String> extractAreas(List<User> users);
 
-    List<String> extractOperationsFromUsers(List<User> users);
+    List<String> extractOperations(List<User> users);
 
 }

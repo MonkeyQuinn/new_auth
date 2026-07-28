@@ -29,7 +29,7 @@ public class UserQueryServiceImpl implements UserQueryService {
     }
 
     @Override
-    public User getUserByName(String username) {
+    public User getUserByUsername(String username) {
         return tokenManager.withTokenRetryOnce(token -> authClient.getUser(username, token));
     }
 
@@ -50,12 +50,12 @@ public class UserQueryServiceImpl implements UserQueryService {
     }
 
     @Override
-    public List<String> extractAreasFromUsers(List<User> users) {
+    public List<String> extractAreas(List<User> users) {
         return extractUniqueFromUsers(users, user -> nonNullStream(user.getPermissions()), Permission::area);
     }
 
     @Override
-    public List<String> extractOperationsFromUsers(List<User> users) {
+    public List<String> extractOperations(List<User> users) {
         return extractUniqueFromUsers(users, user -> nonNullStream(user.getPermissions()), Permission::operation);
     }
 
