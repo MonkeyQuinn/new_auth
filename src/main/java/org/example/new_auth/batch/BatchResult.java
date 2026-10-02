@@ -6,8 +6,8 @@ import java.util.List;
 
 public class BatchResult<T> {
 
-    private List<T> success;
-    private List<BatchError> errors;
+    private final List<T> success;
+    private final List<BatchError> errors;
 
     public BatchResult(List<T> success, List<BatchError> errors) {
         this.success = success == null ? new ArrayList<>() : new ArrayList<>(success);
