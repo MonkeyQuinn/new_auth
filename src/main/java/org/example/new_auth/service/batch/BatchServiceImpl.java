@@ -1,13 +1,14 @@
 package org.example.new_auth.service.batch;
 
-import org.example.new_auth.domain.Permission;
-import org.example.new_auth.domain.User;
 import org.example.new_auth.batch.BatchError;
+import org.example.new_auth.batch.BatchProcessor;
 import org.example.new_auth.batch.BatchResult;
 import org.example.new_auth.batch.UserItem;
+import org.example.new_auth.domain.Permission;
+import org.example.new_auth.domain.User;
+import org.example.new_auth.dto.request.UserIdProductIdsRequest;
 import org.example.new_auth.service.permission.PermissionService;
 import org.example.new_auth.service.user.UserQueryService;
-import org.example.new_auth.batch.BatchProcessor;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -102,6 +103,28 @@ public class BatchServiceImpl implements BatchService {
     @Override
     public BatchResult<User> grantPermissionsByUserIds(List<Long> ids, List<Permission> permissions) {
         return modifyAndSaveUsers(getUserItemsByIds(ids), user -> permissionService.grantPermissions(user, permissions));
+    }
+
+    @Override
+    public BatchResult<User> grantOldProductsByUserIds(List<UserIdProductIdsRequest> userIdsProductIds, int pack, int interval) {
+        return processor.batchMap(
+                safeList(userIdsProductIds),
+                userIdProductIds -> {
+                    User user = userService.getUserById(userIdProductIds.userId());
+
+                    List<Permission> permissions = userIdProductIds.productIds()
+                            .stream()
+                            .distinct()
+                            .map(productId -> new Permission("old", "product", productId.toString()))
+                            .toList();
+
+                    return userService.saveUser(permissionService.grantPermissions(user, permissions));
+                },
+                pack,
+                interval,
+                nullExtractor(),
+                userIdProductIds -> userIdProductIds.userId().toString()
+        );
     }
 
     @Override

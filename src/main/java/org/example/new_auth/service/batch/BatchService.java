@@ -1,8 +1,9 @@
 package org.example.new_auth.service.batch;
 
+import org.example.new_auth.batch.BatchResult;
 import org.example.new_auth.domain.Permission;
 import org.example.new_auth.domain.User;
-import org.example.new_auth.batch.BatchResult;
+import org.example.new_auth.dto.request.UserIdProductIdsRequest;
 
 import java.util.List;
 
@@ -35,6 +36,8 @@ public interface BatchService {
     BatchResult<User> grantPermissionsByUsernames(List<String> usernames, List<Permission> permissions);
 
     BatchResult<User> grantPermissionsByUserIds(List<Long> ids, List<Permission> permissions);
+
+    BatchResult<User> grantOldProductsByUserIds(List<UserIdProductIdsRequest> userIdsProductIds, int pack, int interval);
 
     BatchResult<User> revokeAreasByUsernames(List<String> usernames, List<String> areas);
 

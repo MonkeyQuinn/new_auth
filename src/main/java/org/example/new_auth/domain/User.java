@@ -185,6 +185,17 @@ public class User {
         this.permissions.clear();
     }
 
+    public boolean containsPermission(Permission permission) {
+        if (permission == null) return false;
+
+        for (Permission p : this.permissions) {
+            if (p.area().equals(permission.area()) && p.topic().equals(permission.topic()) && p.operation().equals(permission.operation()))
+                return true;
+        }
+
+        return false;
+    }
+
     private void removeFromPermissionsByValues(Collection<String> values, Function<Permission, String> extractor) {
         if (values == null || values.isEmpty() || this.permissions.isEmpty()) return;
         Set<String> valuesSet = new HashSet<>(values);

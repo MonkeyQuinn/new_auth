@@ -1,8 +1,9 @@
 package org.example.new_auth.service.auth;
 
+import org.example.new_auth.batch.BatchResult;
 import org.example.new_auth.domain.Permission;
 import org.example.new_auth.domain.User;
-import org.example.new_auth.batch.BatchResult;
+import org.example.new_auth.dto.request.UserIdProductIdsRequest;
 import org.example.new_auth.service.batch.BatchService;
 import org.example.new_auth.service.user.UserQueryService;
 import org.springframework.stereotype.Service;
@@ -113,6 +114,11 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public BatchResult<User> grantPermissionsByUserIds(List<Long> ids, List<Permission> permissions) {
         return batchService.grantPermissionsByUserIds(ids, permissions);
+    }
+
+    @Override
+    public BatchResult<User> grantOldProductsByUserIds(List<UserIdProductIdsRequest> userIdsProductIds, int pack, int interval) {
+        return batchService.grantOldProductsByUserIds(userIdsProductIds, pack, interval);
     }
 
     @Override

@@ -148,6 +148,12 @@ public class ApiController {
         return ResponseEntity.ok(mapBatchResult(users, userMapper::toDtoList));
     }
 
+    @PostMapping("/permissions/old-products/grant/by-user-ids")
+    public ResponseEntity<BatchResult<UserResponse>> grantOldProductsByUserIds(@RequestBody UserIdProductIdsBatchRequest body, @RequestParam(required = false, defaultValue = "100") int pack, @RequestParam(required = false, defaultValue = "15000") int interval) {
+        BatchResult<User> users = authService.grantOldProductsByUserIds(body.userIdsProductIds(), pack, interval);
+        return ResponseEntity.ok(mapBatchResult(users, userMapper::toDtoList));
+    }
+
     @PostMapping("/areas/revoke/by-usernames")
     public ResponseEntity<BatchResult<UserResponse>> revokeAreasByUsernames(@RequestBody UsernamesAreasRequest body) {
         BatchResult<User> users = authService.revokeAreasByUsernames(body.usernames(), body.areas());

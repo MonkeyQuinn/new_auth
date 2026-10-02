@@ -3,8 +3,8 @@ package org.example.new_auth.service.auth;
 import org.example.new_auth.batch.BatchResult;
 import org.example.new_auth.domain.Permission;
 import org.example.new_auth.domain.User;
+import org.example.new_auth.dto.request.UserIdProductIdsRequest;
 
-import javax.management.BadAttributeValueExpException;
 import java.util.List;
 
 public interface AuthService {
@@ -47,6 +47,8 @@ public interface AuthService {
 
     BatchResult<User> grantPermissionsByUserIds(List<Long> ids, List<Permission> permissions);
 
+    BatchResult<User> grantOldProductsByUserIds(List<UserIdProductIdsRequest> userIdsProductIds, int pack, int interval);
+
     BatchResult<User> revokeAreasByUsernames(List<String> usernames, List<String> areas);
 
     BatchResult<User> revokeOperationsByUsernames(List<String> usernames, List<String> operations);
@@ -58,4 +60,5 @@ public interface AuthService {
     BatchResult<User> clearPermissionsByUsernames(List<String> usernames);
 
     BatchResult<User> clearPermissionsByUserIds(List<Long> ids);
+
 }

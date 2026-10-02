@@ -27,7 +27,7 @@ public class BatchResult<T> {
         this.success.add(success);
     }
 
-    public void addSuccess(List<T> success) {
+    public void addSuccesses(List<T> success) {
         if (success == null || success.isEmpty()) return;
         success.forEach(this::addSuccess);
     }

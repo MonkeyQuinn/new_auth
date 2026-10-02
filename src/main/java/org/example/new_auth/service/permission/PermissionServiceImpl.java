@@ -4,18 +4,27 @@ import org.example.new_auth.domain.Permission;
 import org.example.new_auth.domain.User;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 
-import static org.example.new_auth.util.AuthUtils.*;
+import static org.example.new_auth.util.AuthUtils.nonNullStream;
+import static org.example.new_auth.util.AuthUtils.ofNullableStream;
 
 @Service
 public class PermissionServiceImpl implements PermissionService {
 
     @Override
     public User grantPermissions(User user, List<Permission> permissions) {
-        List<Permission> safePermissions = nonNullStream(permissions).toList();
+        List<Permission> safePermissions = new ArrayList<>();
+
+        for (Permission permission : nonNullStream(permissions).toList()) {
+            if (!user.containsPermission(permission)) {
+                safePermissions.add(permission);
+            }
+        }
+
         return modify(user, u -> u.grantPermissions(safePermissions));
     }
 
@@ -37,8 +46,7 @@ public class PermissionServiceImpl implements PermissionService {
     }
 
     private User modify(User user, Consumer<User> modifier) {
-        Objects.requireNonNull(user, "User must not be null");
-        modifier.accept(user);
+        modifier.accept(Objects.requireNonNull(user, "User must not be null"));
         return user;
     }
 
