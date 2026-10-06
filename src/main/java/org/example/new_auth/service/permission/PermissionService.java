@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface PermissionService {
 
-    User grantPermissions(User user, List<Permission> permissions);
+    User addPermissions(User user, List<Permission> permissions);
 
     User revokeAreas(User user, List<String> areas);
 

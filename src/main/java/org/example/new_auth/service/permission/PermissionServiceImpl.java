@@ -16,7 +16,7 @@ import static org.example.new_auth.util.AuthUtils.ofNullableStream;
 public class PermissionServiceImpl implements PermissionService {
 
     @Override
-    public User grantPermissions(User user, List<Permission> permissions) {
+    public User addPermissions(User user, List<Permission> permissions) {
         List<Permission> safePermissions = new ArrayList<>();
 
         for (Permission permission : nonNullStream(permissions).toList()) {

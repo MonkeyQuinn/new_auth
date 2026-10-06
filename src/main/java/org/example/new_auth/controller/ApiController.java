@@ -191,7 +191,7 @@ public class ApiController {
     }
 
     private <T, R> BatchResult<R> mapBatchResult(BatchResult<T> source, Function<List<T>, List<R>> mapper) {
-        return new BatchResult<>(mapper.apply(source.getSuccess()), source.getErrors());
+        return new BatchResult<>(mapper.apply(source.success()), source.errors());
     }
 
 }

@@ -33,9 +33,7 @@ public class BatchServiceImpl implements BatchService {
 
     @Override
     public BatchResult<User> getUsersByUsernames(List<String> usernames) {
-        return processor.batchMap(
-                safeList(usernames), userService::getUserByUsername, Function.identity(), nullExtractor()
-        );
+        return processor.batchMap(safeList(usernames), userService::getUserByUsername, Function.identity(), nullExtractor());
     }
 
     @Override
@@ -70,9 +68,7 @@ public class BatchServiceImpl implements BatchService {
 
     @Override
     public BatchResult<String> filterUsernamesByAreas(List<String> usernames, List<String> areas) {
-        return findByRequired(
-                usernames, areas, this::getUsersByUsernames, Permission::area, user -> user.getUsernames().stream()
-        );
+        return findByRequired(usernames, areas, this::getUsersByUsernames, Permission::area, user -> user.getUsernames().stream());
     }
 
     @Override
@@ -97,29 +93,28 @@ public class BatchServiceImpl implements BatchService {
 
     @Override
     public BatchResult<User> grantPermissionsByUsernames(List<String> usernames, List<Permission> permissions) {
-        return modifyAndSaveUsers(getUserItemsByUsernames(usernames), user -> permissionService.grantPermissions(user, permissions));
+        return modifyAndSaveUsers(getUserItemsByUsernames(usernames), user -> permissionService.addPermissions(user, permissions));
     }
 
     @Override
     public BatchResult<User> grantPermissionsByUserIds(List<Long> ids, List<Permission> permissions) {
-        return modifyAndSaveUsers(getUserItemsByIds(ids), user -> permissionService.grantPermissions(user, permissions));
+        return modifyAndSaveUsers(getUserItemsByIds(ids), user -> permissionService.addPermissions(user, permissions));
     }
 
     @Override
     public BatchResult<User> grantOldProductsByUserIds(List<UserIdProductIdsRequest> userIdsProductIds, int pack, int interval) {
         return processor.batchMap(
                 safeList(userIdsProductIds),
-                userIdProductIds -> {
-                    User user = userService.getUserById(userIdProductIds.userId());
-
-                    List<Permission> permissions = userIdProductIds.productIds()
-                            .stream()
-                            .distinct()
-                            .map(productId -> new Permission("old", "product", productId.toString()))
-                            .toList();
-
-                    return userService.saveUser(permissionService.grantPermissions(user, permissions));
-                },
+                userIdProductIds -> userService.saveUser(
+                        permissionService.addPermissions(
+                                userService.getUserById(userIdProductIds.userId()),
+                                userIdProductIds.productIds()
+                                        .stream()
+                                        .distinct()
+                                        .map(productId -> new Permission("old", "product", productId.toString()))
+                                        .toList()
+                        )
+                ),
                 pack,
                 interval,
                 nullExtractor(),
@@ -159,12 +154,12 @@ public class BatchServiceImpl implements BatchService {
 
     private BatchResult<User> modifyAndSaveUsers(BatchResult<UserItem> itemsBatch, Function<User, User> modifier) {
         BatchResult<User> savedBatch = processor.batchMap(
-                safeList(itemsBatch.getSuccess()),
+                safeList(itemsBatch.success()),
                 item -> userService.saveUser(modifier.apply(item.user())),
                 UserItem::item,
                 item -> String.valueOf(item.user().getId()));
 
-        savedBatch.addErrors(itemsBatch.getErrors());
+        savedBatch.addErrors(itemsBatch.errors());
 
         return savedBatch;
     }
@@ -197,14 +192,14 @@ public class BatchServiceImpl implements BatchService {
         Set<String> requiredSet = ofNullableStream(required).collect(Collectors.toSet());
         BatchResult<User> usersBatch = findUsers.apply(new ArrayList<>(sourceSet));
 
-        List<T> success = usersBatch.getSuccess().stream()
+        List<T> success = usersBatch.success().stream()
                 .filter(user -> hasAllRequired(user, requiredSet, permissionMapper))
                 .flatMap(valueExtractor)
                 .filter(sourceSet::contains)
                 .distinct()
                 .toList();
 
-        return new BatchResult<>(success, usersBatch.getErrors());
+        return new BatchResult<>(success, usersBatch.errors());
     }
 
     private boolean hasAllRequired(User user, Set<String> required, Function<Permission, String> mapper) {
@@ -218,10 +213,10 @@ public class BatchServiceImpl implements BatchService {
     }
 
     private <R, T> BatchResult<T> extract(BatchResult<User> usersBatch, Function<User, Stream<R>> extractor, Function<R, T> mapper) {
-        List<User> users = usersBatch.getSuccess();
+        List<User> users = usersBatch.success();
 
         List<T> success = extractUniqueFromUsers(users, extractor, mapper);
-        List<BatchError> errors = new ArrayList<>(usersBatch.getErrors());
+        List<BatchError> errors = new ArrayList<>(usersBatch.errors());
 
         return new BatchResult<>(success, errors);
     }

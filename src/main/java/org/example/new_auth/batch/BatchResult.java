@@ -4,21 +4,20 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class BatchResult<T> {
-
-    private final List<T> success;
-    private final List<BatchError> errors;
+public record BatchResult<T>(List<T> success, List<BatchError> errors) {
 
     public BatchResult(List<T> success, List<BatchError> errors) {
         this.success = success == null ? new ArrayList<>() : new ArrayList<>(success);
         this.errors = errors == null ? new ArrayList<>() : new ArrayList<>(errors);
     }
 
-    public List<T> getSuccess() {
+    @Override
+    public List<T> success() {
         return Collections.unmodifiableList(success);
     }
 
-    public List<BatchError> getErrors() {
+    @Override
+    public List<BatchError> errors() {
         return Collections.unmodifiableList(errors);
     }
 
