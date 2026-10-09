@@ -4,6 +4,7 @@ import org.example.new_auth.batch.BatchResult;
 import org.example.new_auth.domain.Permission;
 import org.example.new_auth.domain.User;
 import org.example.new_auth.dto.request.UserIdProductIdsRequest;
+import org.example.new_auth.dto.request.UsernameUserIdRequest;
 import org.example.new_auth.service.batch.BatchService;
 import org.example.new_auth.service.user.UserQueryService;
 import org.springframework.stereotype.Service;
@@ -44,6 +45,11 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public BatchResult<Long> getUserIdsByUsernames(List<String> usernames) {
         return batchService.getUserIdsByUsernames(usernames);
+    }
+
+    @Override
+    public BatchResult<UsernameUserIdRequest> getUserIdsByUsernamesLinked(List<String> usernames, int pack, int interval) {
+        return batchService.getUserIdsByUsernamesLinked(usernames, pack, interval);
     }
 
     @Override
@@ -107,8 +113,8 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public BatchResult<User> grantPermissionsByUsernames(List<String> usernames, List<Permission> permissions) {
-        return batchService.grantPermissionsByUsernames(usernames, permissions);
+    public BatchResult<User> grantPermissionsByUsernames(List<String> usernames, List<Permission> permissions, int pack, int interval) {
+        return batchService.grantPermissionsByUsernames(usernames, permissions, pack, interval);
     }
 
     @Override
@@ -122,13 +128,13 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public BatchResult<User> revokeAreasByUsernames(List<String> usernames, List<String> areas) {
-        return batchService.revokeAreasByUsernames(usernames, areas);
+    public BatchResult<User> revokeAreasByUsernames(List<String> usernames, List<String> areas, int pack, int interval) {
+        return batchService.revokeAreasByUsernames(usernames, areas, pack, interval);
     }
 
     @Override
-    public BatchResult<User> revokeOperationsByUsernames(List<String> usernames, List<String> operations) {
-        return batchService.revokeOperationsByUsernames(usernames, operations);
+    public BatchResult<User> revokeOperationsByUsernames(List<String> usernames, List<String> operations, int pack, int interval) {
+        return batchService.revokeOperationsByUsernames(usernames, operations, pack, interval);
     }
 
     @Override
@@ -142,8 +148,8 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public BatchResult<User> clearPermissionsByUsernames(List<String> usernames) {
-        return batchService.clearPermissionsByUsernames(usernames);
+    public BatchResult<User> clearPermissionsByUsernames(List<String> usernames, int pack, int interval) {
+        return batchService.clearPermissionsByUsernames(usernames, pack, interval);
     }
 
     @Override

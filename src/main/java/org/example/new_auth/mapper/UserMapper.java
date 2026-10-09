@@ -2,8 +2,10 @@ package org.example.new_auth.mapper;
 
 import org.example.new_auth.domain.User;
 import org.example.new_auth.dto.request.UserRequest;
-import org.example.new_auth.dto.response.UserIdNamesResponse;
+import org.example.new_auth.dto.request.UsernameUserIdRequest;
+import org.example.new_auth.dto.response.UserIdUsernamesResponse;
 import org.example.new_auth.dto.response.UserResponse;
+import org.example.new_auth.dto.response.UsernameUserIdResponse;
 import org.example.new_auth.external.request.ExternalUserRequest;
 import org.example.new_auth.external.response.ExternalUserResponse;
 import org.springframework.stereotype.Component;
@@ -97,8 +99,12 @@ public class UserMapper extends BaseMapper {
         );
     }
 
-    public UserIdNamesResponse toUserIdNames(UserRequest body) {
-        return new UserIdNamesResponse(body.id(), body.usernames());
+    public UserIdUsernamesResponse toUserIdUsernames(UserRequest body) {
+        return new UserIdUsernamesResponse(body.id(), body.usernames());
+    }
+
+    public UsernameUserIdResponse toUsernameUserId(UsernameUserIdRequest body) {
+        return new UsernameUserIdResponse(body.username(), body.userId());
     }
 
     public List<User> toDomainList(List<UserRequest> userRequests) {
@@ -109,8 +115,12 @@ public class UserMapper extends BaseMapper {
         return this.mapList(users, this::toDto);
     }
 
-    public List<UserIdNamesResponse> toUserIdNamesList(List<UserRequest> userRequests) {
-        return this.mapList(userRequests, this::toUserIdNames);
+    public List<UserIdUsernamesResponse> toUserIdUseramesList(List<UserRequest> userRequests) {
+        return this.mapList(userRequests, this::toUserIdUsernames);
+    }
+
+    public List<UsernameUserIdResponse> toUsernameUserIdList(List<UsernameUserIdRequest> usernameUserIdRequests) {
+        return this.mapList(usernameUserIdRequests, this::toUsernameUserId);
     }
 
 }

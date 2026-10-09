@@ -63,6 +63,7 @@ public class BatchProcessor {
             processed++;
             if (processed % pack == 0 && processed < source.size()) {
                 if (!sleep(interval)) break;
+                System.out.println(success.size() + " " + errors.size() + " Sleeping...");
             }
         }
 

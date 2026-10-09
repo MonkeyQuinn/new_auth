@@ -7,6 +7,7 @@ import org.example.new_auth.batch.UserItem;
 import org.example.new_auth.domain.Permission;
 import org.example.new_auth.domain.User;
 import org.example.new_auth.dto.request.UserIdProductIdsRequest;
+import org.example.new_auth.dto.request.UsernameUserIdRequest;
 import org.example.new_auth.service.permission.PermissionService;
 import org.example.new_auth.service.user.UserQueryService;
 import org.springframework.stereotype.Service;
@@ -44,6 +45,15 @@ public class BatchServiceImpl implements BatchService {
     @Override
     public BatchResult<Long> getUserIdsByUsernames(List<String> usernames) {
         return extract(getUsersByUsernames(usernames), user -> Stream.of(user.getId()), Function.identity());
+    }
+
+    @Override
+    public BatchResult<UsernameUserIdRequest> getUserIdsByUsernamesLinked(List<String> usernames, int pack, int interval) {
+        return extract(
+                getUserItemsByUsernames(usernames, pack, interval),
+                userItem -> Stream.of(new UsernameUserIdRequest(userItem.item(), userItem.user().getId())),
+                Function.identity()
+        );
     }
 
     @Override
@@ -92,8 +102,8 @@ public class BatchServiceImpl implements BatchService {
     }
 
     @Override
-    public BatchResult<User> grantPermissionsByUsernames(List<String> usernames, List<Permission> permissions) {
-        return modifyAndSaveUsers(getUserItemsByUsernames(usernames), user -> permissionService.addPermissions(user, permissions));
+    public BatchResult<User> grantPermissionsByUsernames(List<String> usernames, List<Permission> permissions, int pack, int interval) {
+        return modifyAndSaveUsers(getUserItemsByUsernames(usernames, pack, interval), user -> permissionService.addPermissions(user, permissions));
     }
 
     @Override
@@ -123,13 +133,13 @@ public class BatchServiceImpl implements BatchService {
     }
 
     @Override
-    public BatchResult<User> revokeAreasByUsernames(List<String> usernames, List<String> areas) {
-        return modifyAndSaveUsers(getUserItemsByUsernames(usernames), user -> permissionService.revokeAreas(user, areas));
+    public BatchResult<User> revokeAreasByUsernames(List<String> usernames, List<String> areas, int pack, int interval) {
+        return modifyAndSaveUsers(getUserItemsByUsernames(usernames, pack, interval), user -> permissionService.revokeAreas(user, areas));
     }
 
     @Override
-    public BatchResult<User> revokeOperationsByUsernames(List<String> usernames, List<String> operations) {
-        return modifyAndSaveUsers(getUserItemsByUsernames(usernames), user -> permissionService.revokeOperations(user, operations));
+    public BatchResult<User> revokeOperationsByUsernames(List<String> usernames, List<String> operations, int pack, int interval) {
+        return modifyAndSaveUsers(getUserItemsByUsernames(usernames, pack, interval), user -> permissionService.revokeOperations(user, operations));
     }
 
     @Override
@@ -143,8 +153,8 @@ public class BatchServiceImpl implements BatchService {
     }
 
     @Override
-    public BatchResult<User> clearPermissionsByUsernames(List<String> usernames) {
-        return modifyAndSaveUsers(getUserItemsByUsernames(usernames), permissionService::clearPermissions);
+    public BatchResult<User> clearPermissionsByUsernames(List<String> usernames, int pack, int interval) {
+        return modifyAndSaveUsers(getUserItemsByUsernames(usernames, pack, interval), permissionService::clearPermissions);
     }
 
     @Override
@@ -164,10 +174,12 @@ public class BatchServiceImpl implements BatchService {
         return savedBatch;
     }
 
-    private BatchResult<UserItem> getUserItemsByUsernames(Collection<String> usernames) {
+    private BatchResult<UserItem> getUserItemsByUsernames(Collection<String> usernames, int pack, int interval) {
         return processor.batchMap(
                 safeList(usernames),
                 username -> new UserItem(username, userService.getUserByUsername(username)),
+                pack,
+                interval,
                 Function.identity(),
                 nullExtractor());
     }
@@ -212,11 +224,11 @@ public class BatchServiceImpl implements BatchService {
         return userValues.containsAll(required);
     }
 
-    private <R, T> BatchResult<T> extract(BatchResult<User> usersBatch, Function<User, Stream<R>> extractor, Function<R, T> mapper) {
-        List<User> users = usersBatch.success();
+    private <R, T, I> BatchResult<T> extract(BatchResult<I> batchResult, Function<I, Stream<R>> extractor, Function<R, T> mapper) {
+        List<I> list = batchResult.success();
 
-        List<T> success = extractUniqueFromUsers(users, extractor, mapper);
-        List<BatchError> errors = new ArrayList<>(usersBatch.errors());
+        List<T> success = extractUniqueFromList(list, extractor, mapper);
+        List<BatchError> errors = new ArrayList<>(batchResult.errors());
 
         return new BatchResult<>(success, errors);
     }
