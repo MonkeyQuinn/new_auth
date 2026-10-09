@@ -3,8 +3,8 @@ package org.example.new_auth.service.auth;
 import org.example.new_auth.batch.BatchResult;
 import org.example.new_auth.domain.Permission;
 import org.example.new_auth.domain.User;
-import org.example.new_auth.dto.request.UserIdProductIdsRequest;
-import org.example.new_auth.dto.request.UsernameUserIdRequest;
+import org.example.new_auth.domain.UserIdProductIds;
+import org.example.new_auth.domain.UsernameUserId;
 
 import java.util.List;
 
@@ -20,7 +20,7 @@ public interface AuthService {
 
     BatchResult<Long> getUserIdsByUsernames(List<String> usernames);
 
-    BatchResult<UsernameUserIdRequest> getUserIdsByUsernamesLinked(List<String> usernames, int pack, int interval);
+    BatchResult<UsernameUserId> getUserIdsByUsernamesLinked(List<String> usernames, int pack, int interval);
 
     BatchResult<String> getAreasByUsernames(List<String> usernames);
 
@@ -50,7 +50,7 @@ public interface AuthService {
 
     BatchResult<User> grantPermissionsByUserIds(List<Long> ids, List<Permission> permissions);
 
-    BatchResult<User> grantOldProductsByUserIds(List<UserIdProductIdsRequest> userIdsProductIds, int pack, int interval);
+    BatchResult<User> grantOldProductsByUserIds(List<UserIdProductIds> userIdsProductIds, int pack, int interval);
 
     BatchResult<User> revokeAreasByUsernames(List<String> usernames, List<String> areas, int pack, int interval);
 

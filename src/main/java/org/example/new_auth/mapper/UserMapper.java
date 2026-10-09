@@ -1,8 +1,10 @@
 package org.example.new_auth.mapper;
 
 import org.example.new_auth.domain.User;
+import org.example.new_auth.domain.UserIdProductIds;
+import org.example.new_auth.domain.UsernameUserId;
+import org.example.new_auth.dto.request.UserIdProductIdsRequest;
 import org.example.new_auth.dto.request.UserRequest;
-import org.example.new_auth.dto.request.UsernameUserIdRequest;
 import org.example.new_auth.dto.response.UserIdUsernamesResponse;
 import org.example.new_auth.dto.response.UserResponse;
 import org.example.new_auth.dto.response.UsernameUserIdResponse;
@@ -23,41 +25,41 @@ public class UserMapper extends BaseMapper {
         this.permissionMapper = permissionMapper;
     }
 
-    public User toDomain(ExternalUserResponse response) {
+    public User toDomain(ExternalUserResponse userResponse) {
         return new User(
-                response.id(),
-                response.clientId(),
-                response.status(),
-                response.passChangeNeeded(),
-                response.twoFactorEnabled(),
-                response.inheritClient(),
-                response.firstname(),
-                response.lastname(),
-                response.refreshTokenTtl(),
-                response.accessTokenTtl(),
-                response.tokenCount(),
-                response.usernames(),
-                this.mapList(response.permissions(), permissionMapper::toDomain),
-                this.mapList(response.roles(), roleMapper::toDomain)
+                userResponse.id(),
+                userResponse.clientId(),
+                userResponse.status(),
+                userResponse.passChangeNeeded(),
+                userResponse.twoFactorEnabled(),
+                userResponse.inheritClient(),
+                userResponse.firstname(),
+                userResponse.lastname(),
+                userResponse.refreshTokenTtl(),
+                userResponse.accessTokenTtl(),
+                userResponse.tokenCount(),
+                userResponse.usernames(),
+                this.mapList(userResponse.permissions(), permissionMapper::toDomain),
+                this.mapList(userResponse.roles(), roleMapper::toDomain)
         );
     }
 
-    public User toDomain(UserRequest request) {
+    public User toDomain(UserRequest userRequest) {
         return new User(
-                request.id(),
-                request.clientId(),
-                request.status(),
-                request.passChangeNeeded(),
-                request.twoFactorEnabled(),
-                request.inheritClient(),
-                request.firstname(),
-                request.lastname(),
-                request.refreshTokenTtl(),
-                request.accessTokenTtl(),
-                request.tokenCount(),
-                request.usernames(),
-                this.mapList(request.permissions(), permissionMapper::toDomain),
-                this.mapList(request.roles(), roleMapper::toDomain)
+                userRequest.id(),
+                userRequest.clientId(),
+                userRequest.status(),
+                userRequest.passChangeNeeded(),
+                userRequest.twoFactorEnabled(),
+                userRequest.inheritClient(),
+                userRequest.firstname(),
+                userRequest.lastname(),
+                userRequest.refreshTokenTtl(),
+                userRequest.accessTokenTtl(),
+                userRequest.tokenCount(),
+                userRequest.usernames(),
+                this.mapList(userRequest.permissions(), permissionMapper::toDomain),
+                this.mapList(userRequest.roles(), roleMapper::toDomain)
         );
     }
 
@@ -99,12 +101,16 @@ public class UserMapper extends BaseMapper {
         );
     }
 
-    public UserIdUsernamesResponse toUserIdUsernames(UserRequest body) {
-        return new UserIdUsernamesResponse(body.id(), body.usernames());
+    public UserIdUsernamesResponse toUserIdUsernames(UserRequest userRequest) {
+        return new UserIdUsernamesResponse(userRequest.id(), userRequest.usernames());
     }
 
-    public UsernameUserIdResponse toUsernameUserId(UsernameUserIdRequest body) {
-        return new UsernameUserIdResponse(body.username(), body.userId());
+    public UsernameUserIdResponse toUsernameUserId(UsernameUserId usernameUserId) {
+        return new UsernameUserIdResponse(usernameUserId.username(), usernameUserId.userId());
+    }
+
+    public UserIdProductIds toUserIdProductIds(UserIdProductIdsRequest userIdProductIdsRequest) {
+        return new UserIdProductIds(userIdProductIdsRequest.userId(), userIdProductIdsRequest.productIds());
     }
 
     public List<User> toDomainList(List<UserRequest> userRequests) {
@@ -119,8 +125,12 @@ public class UserMapper extends BaseMapper {
         return this.mapList(userRequests, this::toUserIdUsernames);
     }
 
-    public List<UsernameUserIdResponse> toUsernameUserIdList(List<UsernameUserIdRequest> usernameUserIdRequests) {
-        return this.mapList(usernameUserIdRequests, this::toUsernameUserId);
+    public List<UsernameUserIdResponse> toUsernameUserIdList(List<UsernameUserId> usernameUserIdList) {
+        return this.mapList(usernameUserIdList, this::toUsernameUserId);
+    }
+
+    public List<UserIdProductIds> toUserIdProductIdsList(List<UserIdProductIdsRequest> userIdProductIdsRequestList) {
+        return this.mapList(userIdProductIdsRequestList, this::toUserIdProductIds);
     }
 
 }

@@ -6,8 +6,8 @@ import org.example.new_auth.batch.BatchResult;
 import org.example.new_auth.batch.UserItem;
 import org.example.new_auth.domain.Permission;
 import org.example.new_auth.domain.User;
-import org.example.new_auth.dto.request.UserIdProductIdsRequest;
-import org.example.new_auth.dto.request.UsernameUserIdRequest;
+import org.example.new_auth.domain.UserIdProductIds;
+import org.example.new_auth.domain.UsernameUserId;
 import org.example.new_auth.service.permission.PermissionService;
 import org.example.new_auth.service.user.UserQueryService;
 import org.springframework.stereotype.Service;
@@ -48,10 +48,10 @@ public class BatchServiceImpl implements BatchService {
     }
 
     @Override
-    public BatchResult<UsernameUserIdRequest> getUserIdsByUsernamesLinked(List<String> usernames, int pack, int interval) {
+    public BatchResult<UsernameUserId> getUserIdsByUsernamesLinked(List<String> usernames, int pack, int interval) {
         return extract(
                 getUserItemsByUsernames(usernames, pack, interval),
-                userItem -> Stream.of(new UsernameUserIdRequest(userItem.item(), userItem.user().getId())),
+                userItem -> Stream.of(new UsernameUserId(userItem.item(), userItem.user().getId())),
                 Function.identity()
         );
     }
@@ -112,7 +112,7 @@ public class BatchServiceImpl implements BatchService {
     }
 
     @Override
-    public BatchResult<User> grantOldProductsByUserIds(List<UserIdProductIdsRequest> userIdsProductIds, int pack, int interval) {
+    public BatchResult<User> grantOldProductsByUserIds(List<UserIdProductIds> userIdsProductIds, int pack, int interval) {
         return processor.batchMap(
                 safeList(userIdsProductIds),
                 userIdProductIds -> userService.saveUser(
