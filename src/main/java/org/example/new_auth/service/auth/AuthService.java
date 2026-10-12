@@ -20,7 +20,7 @@ public interface AuthService {
 
     BatchResult<Long> getUserIdsByUsernames(List<String> usernames);
 
-    BatchResult<UsernameUserId> getUserIdsByUsernamesLinked(List<String> usernames, int pack, int interval);
+    BatchResult<UsernameUserId> getUserIdsByUsernamesLinked(List<String> usernames);
 
     BatchResult<String> getAreasByUsernames(List<String> usernames);
 
@@ -46,21 +46,21 @@ public interface AuthService {
 
     BatchResult<User> saveUsers(List<User> users);
 
-    BatchResult<User> grantPermissionsByUsernames(List<String> usernames, List<Permission> permissions, int pack, int interval);
+    BatchResult<User> grantPermissionsByUsernames(List<String> usernames, List<Permission> permissions);
 
     BatchResult<User> grantPermissionsByUserIds(List<Long> ids, List<Permission> permissions);
 
-    BatchResult<User> grantOldProductsByUserIds(List<UserIdProductIds> userIdsProductIds, int pack, int interval);
+    BatchResult<User> grantOldProductsByUserIds(List<UserIdProductIds> userIdsProductIds);
 
-    BatchResult<User> revokeAreasByUsernames(List<String> usernames, List<String> areas, int pack, int interval);
+    BatchResult<User> revokeAreasByUsernames(List<String> usernames, List<String> areas);
 
-    BatchResult<User> revokeOperationsByUsernames(List<String> usernames, List<String> operations, int pack, int interval);
+    BatchResult<User> revokeOperationsByUsernames(List<String> usernames, List<String> operations);
 
     BatchResult<User> revokeAreasByUserIds(List<Long> ids, List<String> areas);
 
     BatchResult<User> revokeOperationsByUserIds(List<Long> ids, List<String> operations);
 
-    BatchResult<User> clearPermissionsByUsernames(List<String> usernames, int pack, int interval);
+    BatchResult<User> clearPermissionsByUsernames(List<String> usernames);
 
     BatchResult<User> clearPermissionsByUserIds(List<Long> ids);
 

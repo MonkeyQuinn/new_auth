@@ -35,14 +35,32 @@ public class GlobalRestExceptionHandler {
     public ResponseEntity<ErrorResponse> handleException(Exception e, HttpServletRequest request) {
         log.error("Unhandled exception: {}", e.getMessage(), e);
 
+        Throwable rootCause = getRootCause(e);
+        HttpStatus status = getStatus(rootCause);
+
         ErrorResponse errorResponse = new ErrorResponse(
-                HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                e.getMessage(),
+                status.value(),
+                rootCause.getMessage(),
                 request.getRequestURI(),
                 request.getContextPath(),
                 LocalDateTime.now());
 
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        return ResponseEntity.status(status).body(errorResponse);
+    }
+
+    private HttpStatus getStatus(Throwable e) {
+        if (e instanceof IllegalArgumentException) return HttpStatus.BAD_REQUEST;
+        else return HttpStatus.INTERNAL_SERVER_ERROR;
+    }
+
+    private Throwable getRootCause(Throwable e) {
+        Throwable cause = e;
+
+        while (cause.getCause() != null) {
+            cause = cause.getCause();
+        }
+
+        return cause;
     }
 
 }
