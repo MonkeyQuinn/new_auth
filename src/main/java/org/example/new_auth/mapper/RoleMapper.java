@@ -38,21 +38,21 @@ public class RoleMapper extends BaseMapper {
 
     public RoleResponse toDto(Role role) {
         return new RoleResponse(
-                role.getId(),
-                role.getCode(),
-                role.getDescription(),
-                role.getOrganization(),
-                this.mapList(role.getPermissions(), permissionMapper::toDto)
+                role.id(),
+                role.code(),
+                role.description(),
+                role.organization(),
+                this.mapList(role.permissions(), permissionMapper::toDto)
         );
     }
 
     public ExternalRoleRequest toExternal(Role role) {
         return new ExternalRoleRequest(
-                role.getId(),
-                role.getCode(),
-                role.getDescription(),
-                role.getOrganization(),
-                this.mapList(role.getPermissions(), permissionMapper::toExternal)
+                role.id(),
+                role.code(),
+                role.description(),
+                role.organization(),
+                this.mapList(role.permissions(), permissionMapper::toExternal)
         );
     }
 

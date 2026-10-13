@@ -56,4 +56,6 @@ public interface BatchService {
     BatchResult<User> clearPermissionsByUsernames(List<String> usernames, int pack, int interval);
 
     BatchResult<User> clearPermissionsByUserIds(List<Long> ids);
+
+    BatchResult<UsernameUserId> sandNotMatchesByUsernames(List<UsernameUserId> list);
 }

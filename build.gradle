@@ -19,6 +19,7 @@ repositories {
 }
 
 dependencies {
+	implementation 'io.tarantool:cartridge-driver:0.14.3'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-webmvc'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'

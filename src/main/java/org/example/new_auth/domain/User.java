@@ -189,7 +189,10 @@ public class User {
         if (permission == null) return false;
 
         for (Permission p : this.permissions) {
-            if (p.area().equals(permission.area()) && p.topic().equals(permission.topic()) && p.operation().equals(permission.operation()))
+            if (p != null &&
+                    p.area().equals(permission.area()) &&
+                    p.topic().equals(permission.topic()) &&
+                    p.operation().equals(permission.operation()))
                 return true;
         }
 

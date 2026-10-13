@@ -11,3 +11,10 @@ api:
     username: ${USERNAME_ENDPOINT}
     user-id: ${USER_ID_ENDPOINT}
     save: ${SAVE_ENDPOINT}
+
+tarantool:
+  host: 10.8.112.16
+  port: 3301
+  user-name: fcbuser
+  password: WVyx8y3e
+  connect-timeout-ms: 5000

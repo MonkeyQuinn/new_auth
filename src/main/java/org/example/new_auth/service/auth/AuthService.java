@@ -67,4 +67,7 @@ public interface AuthService {
 
     BatchResult<User> clearPermissionsByUserIds(List<Long> ids);
 
+    BatchResult<UsernameUserId> sandNotMatchesByUsernames(List<UsernameUserId> list);
+
+    User sandUserRecreate(String username);
 }

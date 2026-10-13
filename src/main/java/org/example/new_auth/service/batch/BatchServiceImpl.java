@@ -175,6 +175,20 @@ public class BatchServiceImpl implements BatchService {
         return modifyAndSaveUsers(getUserItemsByIds(ids), permissionService::clearPermissions);
     }
 
+    @Override
+    public BatchResult<UsernameUserId> sandNotMatchesByUsernames(List<UsernameUserId> list) {
+        return processor.batchMap(
+                safeList(list),
+                u -> {
+                    User user = userService.getUserByUsername(u.username());
+                    if (!Objects.equals(user.getId(), u.userId())) return new UsernameUserId(u.username(), u.userId());
+                    return new UsernameUserId(u.username(), null);
+                },
+                UsernameUserId::username,
+                nullExtractor()
+        );
+    }
+
     private BatchResult<User> modifyAndSaveUsers(BatchResult<UserItem> itemsBatch, Function<User, User> modifier) {
         BatchResult<User> savedBatch = processor.batchMap(
                 safeList(itemsBatch.success()),

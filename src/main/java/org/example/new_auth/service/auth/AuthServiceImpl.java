@@ -10,6 +10,7 @@ import org.example.new_auth.service.batch.BatchService;
 import org.example.new_auth.service.user.UserQueryService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -161,6 +162,34 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public BatchResult<User> clearPermissionsByUserIds(List<Long> ids) {
         return batchService.clearPermissionsByUserIds(ids);
+    }
+
+    @Override
+    public BatchResult<UsernameUserId> sandNotMatchesByUsernames(List<UsernameUserId> list) {
+        return batchService.sandNotMatchesByUsernames(list);
+    }
+
+    @Override
+    public User sandUserRecreate(String username) {
+        User user = userService.getUserByUsername(username);
+
+        User newUser = new User(
+                0L,
+                user.getClientId(),
+                user.getStatus(),
+                user.getPassChangeNeeded(),
+                user.getTwoFactorEnabled(),
+                user.getInheritClient(),
+                user.getFirstname(),
+                user.getLastname(),
+                user.getRefreshTokenTtl(),
+                user.getAccessTokenTtl(),
+                user.getTokenCount(),
+                List.of(username),
+                user.getPermissions(),
+                user.getRoles()
+        );
+        return null;
     }
 
 }
