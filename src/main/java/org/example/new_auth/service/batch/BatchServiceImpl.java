@@ -8,6 +8,7 @@ import org.example.new_auth.domain.Permission;
 import org.example.new_auth.domain.User;
 import org.example.new_auth.domain.UserIdProductIds;
 import org.example.new_auth.domain.UsernameUserId;
+import org.example.new_auth.dto.response.UsernameMatchResponse;
 import org.example.new_auth.service.permission.PermissionService;
 import org.example.new_auth.service.user.UserQueryService;
 import org.springframework.stereotype.Service;
@@ -94,6 +95,18 @@ public class BatchServiceImpl implements BatchService {
     @Override
     public BatchResult<Long> filterUserIdsByOperations(List<Long> ids, List<String> operations) {
         return findByRequired(ids, operations, this::getUsersByIds, Permission::operation, user -> Stream.of(user.getId()));
+    }
+
+    @Override
+    public BatchResult<UsernameMatchResponse> groupUserIdentitiesByUsernames(List<String> usernames) {
+        BatchResult<UserItem> itemsBatch = getUserItemsByUsernames(usernames, 200, 15000);
+
+        List<UsernameMatchResponse> matched = itemsBatch.success().stream()
+                .filter(userItem -> userItem.user().getUsernames().size() > 1)
+                .map(userItem -> new UsernameMatchResponse(userItem.item(), userItem.user().getId(), userItem.user().getUsernames()))
+                .toList();
+
+        return new BatchResult<>(matched, itemsBatch.errors());
     }
 
     @Override
