@@ -4,3 +4,10 @@ api:
   user-pass: ${USER_PASS}
   client-name: ${CLIENT_NAME}
   client-pass: ${CLIENT_PASS}
+
+tarantool:
+  host: ${TARANTOOL_HOST}
+  port: ${TARANTOOL_PORT}
+  user-name: ${TARANTOOL_USER}
+  password: ${TARANTOOL_PASS}
+  connect-timeout-ms: ${TARANTOOL_CONNECT_TIMEOUT_MS}

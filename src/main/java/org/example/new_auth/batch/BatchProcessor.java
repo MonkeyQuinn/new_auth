@@ -93,6 +93,7 @@ public class BatchProcessor {
         try {
             Thread.sleep(interval);
             return true;
+
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             return false;

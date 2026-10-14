@@ -33,7 +33,7 @@ public class ExternalApiErrorHandler {
 
         try {
             HttpStatus status = HttpStatus.valueOf(response.getStatusCode().value());
-            byte[] bodyBytes = readUpTo(response, MAX_ERROR_BODY);
+            byte[] bodyBytes = readUpTo(response);
             String bodyText = toSafeString(bodyBytes, response);
 
             ParsedError parsed = tryParse(bodyBytes, response);
@@ -91,10 +91,9 @@ public class ExternalApiErrorHandler {
         return null;
     }
 
-    private byte[] readUpTo(ClientHttpResponse response, int maxBytes) {
+    private byte[] readUpTo(ClientHttpResponse response) {
         try (InputStream is = response.getBody()) {
-            if (is == null) return new byte[0];
-            return is.readNBytes(maxBytes);
+            return is.readNBytes(ExternalApiErrorHandler.MAX_ERROR_BODY);
 
         } catch (IOException e) {
             return new byte[0];

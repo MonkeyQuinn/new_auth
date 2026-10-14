@@ -31,6 +31,21 @@ public class GlobalRestExceptionHandler {
         return ResponseEntity.status(e.getStatus()).body(errorResponse);
     }
 
+    @ExceptionHandler(TarantoolOperationException.class)
+    public ResponseEntity<ErrorResponse> handleTarantoolOperationException(TarantoolOperationException e) {
+        log.warn("Handling TarantoolOperationException: {}", e.getMessage(), e);
+
+        ErrorResponse errorResponse = new ErrorResponse(
+                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                e.getMessage(),
+                "operation: %s".formatted(e.getOperation()),
+                "space: %s".formatted(e.getSpace()),
+                LocalDateTime.now()
+        );
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException(Exception e, HttpServletRequest request) {
         log.error("Unhandled exception: {}", e.getMessage(), e);
