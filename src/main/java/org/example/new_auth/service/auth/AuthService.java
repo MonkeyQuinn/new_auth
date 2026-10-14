@@ -5,6 +5,7 @@ import org.example.new_auth.domain.Permission;
 import org.example.new_auth.domain.User;
 import org.example.new_auth.domain.UserIdProductIds;
 import org.example.new_auth.domain.UsernameUserId;
+import org.example.new_auth.dto.response.UsernameMatchResponse;
 
 import java.util.List;
 
@@ -39,6 +40,8 @@ public interface AuthService {
     BatchResult<Long> filterUserIdsByAreas(List<Long> ids, List<String> areas);
 
     BatchResult<Long> filterUserIdsByOperations(List<Long> ids, List<String> operations);
+
+    BatchResult<UsernameMatchResponse> groupUserIdentitiesByUsernames(List<String> usernames);
 
     List<String> extractAreas(List<User> users);
 

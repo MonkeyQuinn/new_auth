@@ -5,6 +5,7 @@ import org.example.new_auth.domain.Permission;
 import org.example.new_auth.domain.User;
 import org.example.new_auth.domain.UserIdProductIds;
 import org.example.new_auth.domain.UsernameUserId;
+import org.example.new_auth.dto.response.UsernameMatchResponse;
 import org.example.new_auth.service.batch.BatchService;
 import org.example.new_auth.service.user.UserQueryService;
 import org.springframework.stereotype.Service;
@@ -95,6 +96,11 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public BatchResult<Long> filterUserIdsByOperations(List<Long> ids, List<String> operations) {
         return batchService.filterUserIdsByOperations(ids, operations);
+    }
+
+    @Override
+    public BatchResult<UsernameMatchResponse> groupUserIdentitiesByUsernames(List<String> usernames) {
+        return batchService.groupUserIdentitiesByUsernames(usernames);
     }
 
     @Override

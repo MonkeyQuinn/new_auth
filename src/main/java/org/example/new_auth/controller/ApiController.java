@@ -6,6 +6,7 @@ import org.example.new_auth.domain.UsernameUserId;
 import org.example.new_auth.dto.request.*;
 import org.example.new_auth.dto.response.UserIdUsernamesResponse;
 import org.example.new_auth.dto.response.UserResponse;
+import org.example.new_auth.dto.response.UsernameMatchResponse;
 import org.example.new_auth.mapper.PermissionMapper;
 import org.example.new_auth.mapper.UserMapper;
 import org.example.new_auth.service.auth.AuthService;
@@ -123,6 +124,12 @@ public class ApiController {
     public ResponseEntity<List<UserIdUsernamesResponse>> extractUserIdNames(@RequestBody UsersRequest body) {
         List<UserIdUsernamesResponse> userIdNames = userMapper.toUserIdUseramesList(body.users());
         return ResponseEntity.ok(userIdNames);
+    }
+
+    @PostMapping("/user-identities/group/by-usernames")
+    public ResponseEntity<BatchResult<UsernameMatchResponse>> groupUserIdentitiesByUsernames(@RequestBody UsernamesRequest body) {
+        BatchResult<UsernameMatchResponse> result = authService.groupUserIdentitiesByUsernames(body.usernames());
+        return ResponseEntity.ok(result);
     }
 
     @PostMapping("/areas/extract")
