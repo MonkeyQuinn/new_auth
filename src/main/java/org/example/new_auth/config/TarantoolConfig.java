@@ -14,7 +14,7 @@ public class TarantoolConfig {
     public TarantoolClient<TarantoolTuple, TarantoolResult<TarantoolTuple>> tarantoolClient(TarantoolProperties properties) {
         return TarantoolClientFactory.createClient()
                 .withAddress(properties.host(), properties.port())
-                .withCredentials(properties.userName(), properties.password())
+                .withCredentials(properties.username(), properties.password())
                 .withConnectTimeout(properties.connectTimeoutMs())
                 .build();
     }

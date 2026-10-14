@@ -9,5 +9,5 @@ import java.util.List;
 public record UserRequest(Long id, Integer clientId, Byte status, Boolean passChangeNeeded, Boolean twoFactorEnabled,
                           Boolean inheritClient, String firstname, String lastname, Integer refreshTokenTtl,
                           Integer accessTokenTtl, Integer tokenCount, List<String> usernames,
-                          List<PermissionRequest> permissions, List<RoleRequest> roles) {
+                          List<PermissionRequest> permissions, List<RoleRequest> roles, String password) {
 }

@@ -7,10 +7,10 @@ import org.example.new_auth.domain.UserIdProductIds;
 import org.example.new_auth.domain.UsernameUserId;
 import org.example.new_auth.dto.response.UsernameMatchResponse;
 import org.example.new_auth.service.batch.BatchService;
+import org.example.new_auth.service.tarantool.TarantoolService;
 import org.example.new_auth.service.user.UserQueryService;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -18,10 +18,12 @@ public class AuthServiceImpl implements AuthService {
 
     private final BatchService batchService;
     private final UserQueryService userService;
+    private final TarantoolService tarantoolService;
 
-    public AuthServiceImpl(BatchService batchService, UserQueryService userService) {
+    public AuthServiceImpl(BatchService batchService, UserQueryService userService, TarantoolService tarantoolService) {
         this.batchService = batchService;
         this.userService = userService;
+        this.tarantoolService = tarantoolService;
     }
 
     @Override
@@ -187,8 +189,13 @@ public class AuthServiceImpl implements AuthService {
                 user.getTokenCount(),
                 List.of(username),
                 user.getPermissions(),
-                user.getRoles()
+                user.getRoles(),
+                user.getPassword()
         );
+
+        Long userId = tarantoolService.getUserIdByUsername(username).orElse(null);
+        String secret = userId != null ? tarantoolService.getSecretByUserId(userId).orElse(null) : null;
+
         return null;
     }
 

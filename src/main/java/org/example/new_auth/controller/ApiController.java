@@ -211,7 +211,7 @@ public class ApiController {
         return new BatchResult<>(mapper.apply(source.success()), source.errors());
     }
 
-    @PostMapping("/sandman/usern ame-not-matched-id")
+    @PostMapping("/sandman/username-not-matched-id")
     public ResponseEntity<BatchResult<UsernameUserId>> sandman(@RequestBody List<UsernameUserId> body) {
         BatchResult<UsernameUserId> result = authService.sandNotMatchesByUsernames(body);
         return ResponseEntity.ok(result);

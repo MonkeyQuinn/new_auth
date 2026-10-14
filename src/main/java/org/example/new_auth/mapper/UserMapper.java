@@ -40,7 +40,8 @@ public class UserMapper extends BaseMapper {
                 userResponse.tokenCount(),
                 userResponse.usernames(),
                 this.mapList(userResponse.permissions(), permissionMapper::toDomain),
-                this.mapList(userResponse.roles(), roleMapper::toDomain)
+                this.mapList(userResponse.roles(), roleMapper::toDomain),
+                null
         );
     }
 
@@ -59,7 +60,8 @@ public class UserMapper extends BaseMapper {
                 userRequest.tokenCount(),
                 userRequest.usernames(),
                 this.mapList(userRequest.permissions(), permissionMapper::toDomain),
-                this.mapList(userRequest.roles(), roleMapper::toDomain)
+                this.mapList(userRequest.roles(), roleMapper::toDomain),
+                userRequest.password()
         );
     }
 
@@ -97,7 +99,8 @@ public class UserMapper extends BaseMapper {
                 user.getTokenCount(),
                 user.getUsernames(),
                 this.mapList(user.getPermissions(), permissionMapper::toExternal),
-                this.mapList(user.getRoles(), roleMapper::toExternal)
+                this.mapList(user.getRoles(), roleMapper::toExternal),
+                user.getPassword()
         );
     }
 

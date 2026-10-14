@@ -19,12 +19,13 @@ public class User {
     private List<String> usernames;
     private List<Permission> permissions;
     private List<Role> roles;
+    private String password;
 
     public User(Long id, Integer clientId, Byte status,
                 Boolean passChangeNeeded, Boolean twoFactorEnabled, Boolean inheritClient,
                 String firstname, String lastname,
                 Integer refreshTokenTtl, Integer accessTokenTtl, Integer tokenCount,
-                List<String> usernames, List<Permission> permissions, List<Role> roles) {
+                List<String> usernames, List<Permission> permissions, List<Role> roles, String password) {
         this.id = id;
         this.clientId = clientId;
         this.status = status;
@@ -39,6 +40,7 @@ public class User {
         this.usernames = usernames == null ? new ArrayList<>() : new ArrayList<>(usernames);
         this.permissions = permissions == null ? new ArrayList<>() : new ArrayList<>(permissions);
         this.roles = roles == null ? new ArrayList<>() : new ArrayList<>(roles);
+        this.password = password;
     }
 
     public Long getId() {
@@ -151,6 +153,14 @@ public class User {
 
     public void setRoles(List<Role> roles) {
         this.roles = roles == null ? new ArrayList<>() : new ArrayList<>(roles);
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public void grantPermission(Permission permission) {

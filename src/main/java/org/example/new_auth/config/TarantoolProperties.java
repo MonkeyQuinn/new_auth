@@ -13,7 +13,7 @@ public record TarantoolProperties(
         @Min(value = 1, message = "Port must be positive")
         @Max(value = 65535, message = "Port must be valid")
         int port,
-        @NotBlank(message = "Tarantool username cannot be blank") String userName,
+        @NotBlank(message = "Tarantool username cannot be blank") String username,
         @NotBlank(message = "Tarantool password cannot be blank") String password,
         int connectTimeoutMs
 ) {
