@@ -16,6 +16,7 @@ public class TarantoolConfig {
                 .withAddress(properties.host(), properties.port())
                 .withCredentials(properties.username(), properties.password())
                 .withConnectTimeout(properties.connectTimeoutMs())
+                .withRequestTimeout(5000)
                 .build();
     }
 

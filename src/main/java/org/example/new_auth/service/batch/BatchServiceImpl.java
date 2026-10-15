@@ -10,8 +10,13 @@ import org.example.new_auth.domain.UserIdProductIds;
 import org.example.new_auth.domain.UsernameUserId;
 import org.example.new_auth.dto.request.SandRecreateRequest;
 import org.example.new_auth.dto.response.UsernameMatchResponse;
+import org.example.new_auth.exception.ApiException;
+import org.example.new_auth.exception.TarantoolOperationException;
+import org.example.new_auth.repository.UserSqlRepository;
 import org.example.new_auth.service.permission.PermissionService;
+import org.example.new_auth.service.tarantool.TarantoolService;
 import org.example.new_auth.service.user.UserQueryService;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -27,11 +32,15 @@ public class BatchServiceImpl implements BatchService {
     private final UserQueryService userService;
     private final PermissionService permissionService;
     private final BatchProcessor processor;
+    private final TarantoolService tarantoolService;
+    private final UserSqlRepository queryRepository;
 
-    public BatchServiceImpl(UserQueryService userService, PermissionService permissionService, BatchProcessor processor) {
+    public BatchServiceImpl(UserQueryService userService, PermissionService permissionService, BatchProcessor processor, TarantoolService tarantoolService, UserSqlRepository queryRepository) {
         this.userService = userService;
         this.permissionService = permissionService;
         this.processor = processor;
+        this.tarantoolService = tarantoolService;
+        this.queryRepository = queryRepository;
     }
 
     @Override
@@ -190,32 +199,61 @@ public class BatchServiceImpl implements BatchService {
 
     @Override
     public BatchResult<User> sandUsersRecreate(List<SandRecreateRequest> list) {
-        BatchResult<UserItem> itemsBatch = processor.batchMap(
+        return processor.batchMap(
                 safeList(list),
                 sand -> {
-                    System.out.println("processing oAuth: " + sand.userId());
-
                     User user = userService.getUserById(sand.userId());
 
                     if (user.getUsernames().contains(sand.baseName()) && user.getUsernames().contains(sand.recreateName())) {
-                        System.out.println("sand user recreated");
-                    }
+                        User newUser = new User(0L,
+                                user.getClientId(),
+                                user.getStatus(),
+                                user.getPassChangeNeeded(),
+                                user.getTwoFactorEnabled(),
+                                user.getInheritClient(),
+                                user.getFirstname(),
+                                user.getLastname(),
+                                user.getRefreshTokenTtl(),
+                                user.getAccessTokenTtl(),
+                                user.getTokenCount(),
+                                List.of(sand.recreateName()),
+                                user.getPermissions(),
+                                user.getRoles(),
+                                "password");
 
-                    if (!user.getUsernames().contains(sand.baseName())) {
-                        System.out.println("sand user not baseName");
-                    }
+                        if (tarantoolService.deleteUsernameByUserId(sand.userId(), sand.recreateName())) {
+                            String secret = tarantoolService.getSecretByUserId(sand.userId()).orElse(null);
+                            User createdUser = userService.saveUser(newUser);
 
-                    if (!user.getUsernames().contains(sand.recreateName())) {
-                        System.out.println("sand user not recreateName");
-                    }
+                            if (tarantoolService.updateSecretByUserId(createdUser.getId(), secret)) {
+                                System.out.println(queryRepository.updateOAuthByUsername(sand.recreateName(), createdUser.getId()));
+                                return createdUser;
 
-                    return new UserItem(Objects.toString(sand.userId()), user);
+                            } else {
+                                throw new TarantoolOperationException("Secret for new user: %s not updated".formatted(sand.recreateName()), "updateSecretByUserId", "auth_users");
+                            }
+
+                        } else {
+                            throw new TarantoolOperationException("username: %s with userId: %d not deleted".formatted(sand.recreateName(), sand.userId()), "deleteUsernameByUserId", "auth_usernames");
+                        }
+
+                    } else {
+                        String errMsg = "Sand user not recreated";
+
+                        if (!user.getUsernames().contains(sand.baseName())) {
+                            errMsg += ". Sand user not baseName: " + sand.baseName();
+                        }
+
+                        if (!user.getUsernames().contains(sand.recreateName())) {
+                            errMsg += ". Sand user not recreateName: " + sand.recreateName();
+                        }
+
+                        throw new ApiException(errMsg, HttpStatus.NOT_FOUND, null, null);
+                    }
                 },
                 nullExtractor(),
                 Objects::toString
         );
-
-        return new BatchResult<>(itemsBatch.success().stream().map(UserItem::user).toList(), itemsBatch.errors());
     }
 
     private BatchResult<User> modifyAndSaveUsers(BatchResult<UserItem> itemsBatch, Function<User, User> modifier) {

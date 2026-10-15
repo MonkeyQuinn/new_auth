@@ -2,6 +2,10 @@ spring:
   application:
     name: new_auth
 
+  jdbc:
+    template:
+      query-timeout: 10s
+
   profiles:
     active: ${PROFILE}
 

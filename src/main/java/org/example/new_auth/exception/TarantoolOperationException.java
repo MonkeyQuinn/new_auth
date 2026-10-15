@@ -5,6 +5,12 @@ public class TarantoolOperationException extends RuntimeException {
     private final String operation;
     private final String space;
 
+    public TarantoolOperationException(String message, String operation, String space) {
+        super(message);
+        this.operation = operation;
+        this.space = space;
+    }
+
     public TarantoolOperationException(String message, String operation, String space, Throwable cause) {
         super(message, cause);
         this.operation = operation;
