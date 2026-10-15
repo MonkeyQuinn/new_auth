@@ -49,9 +49,9 @@ public class BatchServiceImpl implements BatchService {
     }
 
     @Override
-    public BatchResult<UsernameUserId> getUserIdsByUsernamesLinked(List<String> usernames, int pack, int interval) {
+    public BatchResult<UsernameUserId> getUserIdsByUsernamesLinked(List<String> usernames) {
         return extract(
-                getUserItemsByUsernames(usernames, pack, interval),
+                getUserItemsByUsernames(usernames),
                 userItem -> Stream.of(new UsernameUserId(userItem.item(), userItem.user().getId())),
                 Function.identity()
         );
@@ -115,8 +115,8 @@ public class BatchServiceImpl implements BatchService {
     }
 
     @Override
-    public BatchResult<User> grantPermissionsByUsernames(List<String> usernames, List<Permission> permissions, int pack, int interval) {
-        return modifyAndSaveUsers(getUserItemsByUsernames(usernames, pack, interval), user -> permissionService.addPermissions(user, permissions));
+    public BatchResult<User> grantPermissionsByUsernames(List<String> usernames, List<Permission> permissions) {
+        return modifyAndSaveUsers(getUserItemsByUsernames(usernames), user -> permissionService.addPermissions(user, permissions));
     }
 
     @Override
@@ -125,7 +125,7 @@ public class BatchServiceImpl implements BatchService {
     }
 
     @Override
-    public BatchResult<User> grantOldProductsByUserIds(List<UserIdProductIds> userIdsProductIds, int pack, int interval) {
+    public BatchResult<User> grantOldProductsByUserIds(List<UserIdProductIds> userIdsProductIds) {
         return processor.batchMap(
                 safeList(userIdsProductIds),
                 userIdProductIds -> userService.saveUser(
@@ -138,21 +138,19 @@ public class BatchServiceImpl implements BatchService {
                                         .toList()
                         )
                 ),
-                pack,
-                interval,
                 nullExtractor(),
                 userIdProductIds -> userIdProductIds.userId().toString()
         );
     }
 
     @Override
-    public BatchResult<User> revokeAreasByUsernames(List<String> usernames, List<String> areas, int pack, int interval) {
-        return modifyAndSaveUsers(getUserItemsByUsernames(usernames, pack, interval), user -> permissionService.revokeAreas(user, areas));
+    public BatchResult<User> revokeAreasByUsernames(List<String> usernames, List<String> areas) {
+        return modifyAndSaveUsers(getUserItemsByUsernames(usernames), user -> permissionService.revokeAreas(user, areas));
     }
 
     @Override
-    public BatchResult<User> revokeOperationsByUsernames(List<String> usernames, List<String> operations, int pack, int interval) {
-        return modifyAndSaveUsers(getUserItemsByUsernames(usernames, pack, interval), user -> permissionService.revokeOperations(user, operations));
+    public BatchResult<User> revokeOperationsByUsernames(List<String> usernames, List<String> operations) {
+        return modifyAndSaveUsers(getUserItemsByUsernames(usernames), user -> permissionService.revokeOperations(user, operations));
     }
 
     @Override
@@ -166,8 +164,8 @@ public class BatchServiceImpl implements BatchService {
     }
 
     @Override
-    public BatchResult<User> clearPermissionsByUsernames(List<String> usernames, int pack, int interval) {
-        return modifyAndSaveUsers(getUserItemsByUsernames(usernames, pack, interval), permissionService::clearPermissions);
+    public BatchResult<User> clearPermissionsByUsernames(List<String> usernames) {
+        return modifyAndSaveUsers(getUserItemsByUsernames(usernames), permissionService::clearPermissions);
     }
 
     @Override
@@ -201,12 +199,10 @@ public class BatchServiceImpl implements BatchService {
         return savedBatch;
     }
 
-    private BatchResult<UserItem> getUserItemsByUsernames(Collection<String> usernames, int pack, int interval) {
+    private BatchResult<UserItem> getUserItemsByUsernames(Collection<String> usernames) {
         return processor.batchMap(
                 safeList(usernames),
                 username -> new UserItem(username, userService.getUserByUsername(username)),
-                pack,
-                interval,
                 Function.identity(),
                 nullExtractor());
     }

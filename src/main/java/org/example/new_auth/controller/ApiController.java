@@ -7,7 +7,6 @@ import org.example.new_auth.dto.request.*;
 import org.example.new_auth.dto.response.UserIdUsernamesResponse;
 import org.example.new_auth.dto.response.UserResponse;
 import org.example.new_auth.dto.response.UsernameMatchResponse;
-import org.example.new_auth.dto.response.UsernameUserIdResponse;
 import org.example.new_auth.mapper.PermissionMapper;
 import org.example.new_auth.mapper.UserMapper;
 import org.example.new_auth.service.auth.AuthService;
@@ -56,12 +55,10 @@ public class ApiController {
     }
 
     @PostMapping("/user-ids/by-usernames")
-    public ResponseEntity<BatchResult<?>> getUserIdsByUsernames(@RequestBody UsernamesRequest body, @RequestParam(defaultValue = "false") boolean linked, @RequestParam(defaultValue = "100") int pack, @RequestParam(defaultValue = "15000") int interval) {
+    public ResponseEntity<BatchResult<?>> getUserIdsByUsernames(@RequestBody UsernamesRequest body, @RequestParam(defaultValue = "false") boolean linked) {
         if (linked) {
-            BatchResult<UsernameUserId> userIdsUsernamesBatch = authService.getUserIdsByUsernamesLinked(body.usernames(), pack, interval);
-            List<UsernameUserIdResponse> usernameUserIdList = userMapper.toUsernameUserIdList(userIdsUsernamesBatch.success());
-            BatchResult<UsernameUserIdResponse> responseBody = new BatchResult<>(usernameUserIdList, userIdsUsernamesBatch.errors());
-            return ResponseEntity.ok(responseBody);
+            BatchResult<UsernameUserId> userIdsUsernamesBatch = authService.getUserIdsByUsernamesLinked(body.usernames());
+            return ResponseEntity.ok(mapBatchResult(userIdsUsernamesBatch, userMapper::toUsernameUserIdList));
 
         } else {
             BatchResult<Long> userIds = authService.getUserIdsByUsernames(body.usernames());
@@ -154,8 +151,8 @@ public class ApiController {
     }
 
     @PostMapping("/permissions/grant/by-usernames")
-    public ResponseEntity<BatchResult<UserResponse>> grantPermissionsByUsernames(@RequestBody UsernamesPermissionsRequest body, @RequestParam(defaultValue = "100") int pack, @RequestParam(defaultValue = "15000") int interval) {
-        BatchResult<User> users = authService.grantPermissionsByUsernames(body.usernames(), permissionMapper.toDomainList(body.permissions()), pack, interval);
+    public ResponseEntity<BatchResult<UserResponse>> grantPermissionsByUsernames(@RequestBody UsernamesPermissionsRequest body) {
+        BatchResult<User> users = authService.grantPermissionsByUsernames(body.usernames(), permissionMapper.toDomainList(body.permissions()));
         return ResponseEntity.ok(mapBatchResult(users, userMapper::toDtoList));
     }
 
@@ -166,20 +163,20 @@ public class ApiController {
     }
 
     @PostMapping("/permissions/old-products/grant/by-user-ids")
-    public ResponseEntity<BatchResult<UserResponse>> grantOldProductsByUserIds(@RequestBody UserIdProductIdsBatchRequest body, @RequestParam(defaultValue = "100") int pack, @RequestParam(defaultValue = "15000") int interval) {
-        BatchResult<User> users = authService.grantOldProductsByUserIds(userMapper.toUserIdProductIdsList(body.userIdsProductIds()), pack, interval);
+    public ResponseEntity<BatchResult<UserResponse>> grantOldProductsByUserIds(@RequestBody UserIdProductIdsBatchRequest body) {
+        BatchResult<User> users = authService.grantOldProductsByUserIds(userMapper.toUserIdProductIdsList(body.userIdsProductIds()));
         return ResponseEntity.ok(mapBatchResult(users, userMapper::toDtoList));
     }
 
     @PostMapping("/areas/revoke/by-usernames")
-    public ResponseEntity<BatchResult<UserResponse>> revokeAreasByUsernames(@RequestBody UsernamesAreasRequest body, @RequestParam(defaultValue = "100") int pack, @RequestParam(defaultValue = "15000") int interval) {
-        BatchResult<User> users = authService.revokeAreasByUsernames(body.usernames(), body.areas(), pack, interval);
+    public ResponseEntity<BatchResult<UserResponse>> revokeAreasByUsernames(@RequestBody UsernamesAreasRequest body) {
+        BatchResult<User> users = authService.revokeAreasByUsernames(body.usernames(), body.areas());
         return ResponseEntity.ok(mapBatchResult(users, userMapper::toDtoList));
     }
 
     @PostMapping("/operations/revoke/by-usernames")
-    public ResponseEntity<BatchResult<UserResponse>> revokeOperationsByUsernames(@RequestBody UsernamesOperationsRequest body, @RequestParam(defaultValue = "100") int pack, @RequestParam(defaultValue = "15000") int interval) {
-        BatchResult<User> users = authService.revokeOperationsByUsernames(body.usernames(), body.operations(), pack, interval);
+    public ResponseEntity<BatchResult<UserResponse>> revokeOperationsByUsernames(@RequestBody UsernamesOperationsRequest body) {
+        BatchResult<User> users = authService.revokeOperationsByUsernames(body.usernames(), body.operations());
         return ResponseEntity.ok(mapBatchResult(users, userMapper::toDtoList));
     }
 
@@ -196,8 +193,8 @@ public class ApiController {
     }
 
     @PostMapping("/permissions/clear/by-usernames")
-    public ResponseEntity<BatchResult<UserResponse>> clearPermissionsByUsernames(@RequestBody UsernamesRequest body, @RequestParam(defaultValue = "100") int pack, @RequestParam(defaultValue = "15000") int interval) {
-        BatchResult<User> users = authService.clearPermissionsByUsernames(body.usernames(), pack, interval);
+    public ResponseEntity<BatchResult<UserResponse>> clearPermissionsByUsernames(@RequestBody UsernamesRequest body) {
+        BatchResult<User> users = authService.clearPermissionsByUsernames(body.usernames());
         return ResponseEntity.ok(mapBatchResult(users, userMapper::toDtoList));
     }
 
