@@ -8,6 +8,7 @@ import org.example.new_auth.domain.Permission;
 import org.example.new_auth.domain.User;
 import org.example.new_auth.domain.UserIdProductIds;
 import org.example.new_auth.domain.UsernameUserId;
+import org.example.new_auth.dto.request.SandRecreateRequest;
 import org.example.new_auth.dto.response.UsernameMatchResponse;
 import org.example.new_auth.service.permission.PermissionService;
 import org.example.new_auth.service.user.UserQueryService;
@@ -99,7 +100,7 @@ public class BatchServiceImpl implements BatchService {
 
     @Override
     public BatchResult<UsernameMatchResponse> groupUserIdentitiesByUsernames(List<String> usernames) {
-        BatchResult<UserItem> itemsBatch = getUserItemsByUsernames(usernames, 200, 15000);
+        BatchResult<UserItem> itemsBatch = getUserItemsByUsernames(usernames);
 
         List<UsernameMatchResponse> matched = itemsBatch.success().stream()
                 .filter(userItem -> userItem.user().getUsernames().size() > 1)
@@ -185,6 +186,36 @@ public class BatchServiceImpl implements BatchService {
                 UsernameUserId::username,
                 nullExtractor()
         );
+    }
+
+    @Override
+    public BatchResult<User> sandUsersRecreate(List<SandRecreateRequest> list) {
+        BatchResult<UserItem> itemsBatch = processor.batchMap(
+                safeList(list),
+                sand -> {
+                    System.out.println("processing oAuth: " + sand.userId());
+
+                    User user = userService.getUserById(sand.userId());
+
+                    if (user.getUsernames().contains(sand.baseName()) && user.getUsernames().contains(sand.recreateName())) {
+                        System.out.println("sand user recreated");
+                    }
+
+                    if (!user.getUsernames().contains(sand.baseName())) {
+                        System.out.println("sand user not baseName");
+                    }
+
+                    if (!user.getUsernames().contains(sand.recreateName())) {
+                        System.out.println("sand user not recreateName");
+                    }
+
+                    return new UserItem(Objects.toString(sand.userId()), user);
+                },
+                nullExtractor(),
+                Objects::toString
+        );
+
+        return new BatchResult<>(itemsBatch.success().stream().map(UserItem::user).toList(), itemsBatch.errors());
     }
 
     private BatchResult<User> modifyAndSaveUsers(BatchResult<UserItem> itemsBatch, Function<User, User> modifier) {

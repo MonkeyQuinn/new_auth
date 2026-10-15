@@ -5,6 +5,7 @@ import org.example.new_auth.domain.Permission;
 import org.example.new_auth.domain.User;
 import org.example.new_auth.domain.UserIdProductIds;
 import org.example.new_auth.domain.UsernameUserId;
+import org.example.new_auth.dto.request.SandRecreateRequest;
 import org.example.new_auth.dto.response.UsernameMatchResponse;
 
 import java.util.List;
@@ -69,5 +70,6 @@ public interface AuthService {
 
     BatchResult<UsernameUserId> sandNotMatchesByUsernames(List<UsernameUserId> list);
 
-    User sandUserRecreate(String username);
+    BatchResult<User> sandUsersRecreate(List<SandRecreateRequest> list);
+
 }

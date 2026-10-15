@@ -214,9 +214,9 @@ public class ApiController {
         return ResponseEntity.ok(result);
     }
 
-    @PostMapping(value = "/sandman/user/recreate", params = "username")
-    public ResponseEntity<User> sandmanUserRecreate(@RequestParam String username) {
-        return ResponseEntity.ok(authService.sandUserRecreate(username));
+    @PostMapping(value = "/sandman/user/recreate")
+    public ResponseEntity<BatchResult<User>> sandmanUsersRecreate(@RequestBody List<SandRecreateRequest> body) {
+        return ResponseEntity.ok(authService.sandUsersRecreate(body));
     }
 
 }
