@@ -5,10 +5,11 @@ import org.example.new_auth.dto.request.RoleRequest;
 import org.example.new_auth.dto.response.RoleResponse;
 import org.example.new_auth.external.request.ExternalRoleRequest;
 import org.example.new_auth.external.response.ExternalRoleResponse;
+import org.example.new_auth.util.MapperUtils;
 import org.springframework.stereotype.Component;
 
 @Component
-public class RoleMapper extends BaseMapper {
+public class RoleMapper {
 
     private final PermissionMapper permissionMapper;
 
@@ -16,43 +17,43 @@ public class RoleMapper extends BaseMapper {
         this.permissionMapper = permissionMapper;
     }
 
-    public Role toDomain(ExternalRoleResponse response) {
+    public Role fromResponse(ExternalRoleResponse response) {
         return new Role(
                 response.id(),
                 response.code(),
                 response.description(),
                 response.organization(),
-                this.mapList(response.permissions(), permissionMapper::toDomain)
+                MapperUtils.mapList(response.permissions(), permissionMapper::fromResponse)
         );
     }
 
-    public Role toDomain(RoleRequest request) {
+    public Role fromRequest(RoleRequest request) {
         return new Role(
                 request.id(),
                 request.code(),
                 request.description(),
                 request.organization(),
-                this.mapList(request.permissions(), permissionMapper::toDomain)
+                MapperUtils.mapList(request.permissions(), permissionMapper::fromRequest)
         );
     }
 
-    public RoleResponse toDto(Role role) {
+    public RoleResponse toResponse(Role role) {
         return new RoleResponse(
                 role.id(),
                 role.code(),
                 role.description(),
                 role.organization(),
-                this.mapList(role.permissions(), permissionMapper::toDto)
+                MapperUtils.mapList(role.permissions(), permissionMapper::toResponse)
         );
     }
 
-    public ExternalRoleRequest toExternal(Role role) {
+    public ExternalRoleRequest toRequest(Role role) {
         return new ExternalRoleRequest(
                 role.id(),
                 role.code(),
                 role.description(),
                 role.organization(),
-                this.mapList(role.permissions(), permissionMapper::toExternal)
+                MapperUtils.mapList(role.permissions(), permissionMapper::toRequest)
         );
     }
 

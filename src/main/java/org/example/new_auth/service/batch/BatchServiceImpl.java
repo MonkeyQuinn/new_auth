@@ -4,12 +4,8 @@ import org.example.new_auth.batch.BatchError;
 import org.example.new_auth.batch.BatchProcessor;
 import org.example.new_auth.batch.BatchResult;
 import org.example.new_auth.batch.UserItem;
-import org.example.new_auth.domain.Permission;
-import org.example.new_auth.domain.User;
-import org.example.new_auth.domain.UserIdProductIds;
-import org.example.new_auth.domain.UsernameUserId;
+import org.example.new_auth.domain.*;
 import org.example.new_auth.dto.request.SandRecreateRequest;
-import org.example.new_auth.dto.response.UsernameMatchResponse;
 import org.example.new_auth.exception.ApiException;
 import org.example.new_auth.exception.TarantoolOperationException;
 import org.example.new_auth.repository.UserSqlRepository;
@@ -108,12 +104,12 @@ public class BatchServiceImpl implements BatchService {
     }
 
     @Override
-    public BatchResult<UsernameMatchResponse> groupUserIdentitiesByUsernames(List<String> usernames) {
+    public BatchResult<MultiUsernameUser> groupUserIdentitiesByUsernames(List<String> usernames) {
         BatchResult<UserItem> itemsBatch = getUserItemsByUsernames(usernames);
 
-        List<UsernameMatchResponse> matched = itemsBatch.success().stream()
+        List<MultiUsernameUser> matched = itemsBatch.success().stream()
                 .filter(userItem -> userItem.user().getUsernames().size() > 1)
-                .map(userItem -> new UsernameMatchResponse(userItem.item(), userItem.user().getId(), userItem.user().getUsernames()))
+                .map(userItem -> new MultiUsernameUser(userItem.item(), userItem.user().getId(), userItem.user().getUsernames()))
                 .toList();
 
         return new BatchResult<>(matched, itemsBatch.errors());

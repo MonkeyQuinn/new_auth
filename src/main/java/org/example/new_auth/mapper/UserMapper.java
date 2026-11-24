@@ -1,21 +1,17 @@
 package org.example.new_auth.mapper;
 
 import org.example.new_auth.domain.User;
-import org.example.new_auth.domain.UserIdProductIds;
-import org.example.new_auth.domain.UsernameUserId;
-import org.example.new_auth.dto.request.UserIdProductIdsRequest;
 import org.example.new_auth.dto.request.UserRequest;
-import org.example.new_auth.dto.response.UserIdUsernamesResponse;
 import org.example.new_auth.dto.response.UserResponse;
-import org.example.new_auth.dto.response.UsernameUserIdResponse;
 import org.example.new_auth.external.request.ExternalUserRequest;
 import org.example.new_auth.external.response.ExternalUserResponse;
+import org.example.new_auth.util.MapperUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
-public class UserMapper extends BaseMapper {
+public class UserMapper {
 
     private final RoleMapper roleMapper;
     private final PermissionMapper permissionMapper;
@@ -25,7 +21,7 @@ public class UserMapper extends BaseMapper {
         this.permissionMapper = permissionMapper;
     }
 
-    public User toDomain(ExternalUserResponse userResponse) {
+    public User fromResponse(ExternalUserResponse userResponse) {
         return new User(
                 userResponse.id(),
                 userResponse.clientId(),
@@ -39,13 +35,13 @@ public class UserMapper extends BaseMapper {
                 userResponse.accessTokenTtl(),
                 userResponse.tokenCount(),
                 userResponse.usernames(),
-                this.mapList(userResponse.permissions(), permissionMapper::toDomain),
-                this.mapList(userResponse.roles(), roleMapper::toDomain),
-                null
+                MapperUtils.mapList(userResponse.permissions(), permissionMapper::fromResponse),
+                MapperUtils.mapList(userResponse.roles(), roleMapper::fromResponse),
+                userResponse.password()
         );
     }
 
-    public User toDomain(UserRequest userRequest) {
+    public User fromRequest(UserRequest userRequest) {
         return new User(
                 userRequest.id(),
                 userRequest.clientId(),
@@ -59,13 +55,13 @@ public class UserMapper extends BaseMapper {
                 userRequest.accessTokenTtl(),
                 userRequest.tokenCount(),
                 userRequest.usernames(),
-                this.mapList(userRequest.permissions(), permissionMapper::toDomain),
-                this.mapList(userRequest.roles(), roleMapper::toDomain),
+                MapperUtils.mapList(userRequest.permissions(), permissionMapper::fromRequest),
+                MapperUtils.mapList(userRequest.roles(), roleMapper::fromRequest),
                 userRequest.password()
         );
     }
 
-    public UserResponse toDto(User user) {
+    public UserResponse toResponse(User user) {
         return new UserResponse(
                 user.getId(),
                 user.getClientId(),
@@ -79,12 +75,13 @@ public class UserMapper extends BaseMapper {
                 user.getAccessTokenTtl(),
                 user.getTokenCount(),
                 user.getUsernames(),
-                this.mapList(user.getPermissions(), permissionMapper::toDto),
-                this.mapList(user.getRoles(), roleMapper::toDto)
+                MapperUtils.mapList(user.getPermissions(), permissionMapper::toResponse),
+                MapperUtils.mapList(user.getRoles(), roleMapper::toResponse),
+                user.getPassword()
         );
     }
 
-    public ExternalUserRequest toExternal(User user) {
+    public ExternalUserRequest toRequest(User user) {
         return new ExternalUserRequest(
                 user.getId(),
                 user.getClientId(),
@@ -98,42 +95,18 @@ public class UserMapper extends BaseMapper {
                 user.getAccessTokenTtl(),
                 user.getTokenCount(),
                 user.getUsernames(),
-                this.mapList(user.getPermissions(), permissionMapper::toExternal),
-                this.mapList(user.getRoles(), roleMapper::toExternal),
+                MapperUtils.mapList(user.getPermissions(), permissionMapper::toRequest),
+                MapperUtils.mapList(user.getRoles(), roleMapper::toRequest),
                 user.getPassword()
         );
     }
 
-    public UserIdUsernamesResponse toUserIdUsernames(UserRequest userRequest) {
-        return new UserIdUsernamesResponse(userRequest.id(), userRequest.usernames());
+    public List<User> fromRequestList(List<UserRequest> userRequests) {
+        return MapperUtils.mapList(userRequests, this::fromRequest);
     }
 
-    public UsernameUserIdResponse toUsernameUserId(UsernameUserId usernameUserId) {
-        return new UsernameUserIdResponse(usernameUserId.username(), usernameUserId.userId());
-    }
-
-    public UserIdProductIds toUserIdProductIds(UserIdProductIdsRequest userIdProductIdsRequest) {
-        return new UserIdProductIds(userIdProductIdsRequest.userId(), userIdProductIdsRequest.productIds());
-    }
-
-    public List<User> toDomainList(List<UserRequest> userRequests) {
-        return this.mapList(userRequests, this::toDomain);
-    }
-
-    public List<UserResponse> toDtoList(List<User> users) {
-        return this.mapList(users, this::toDto);
-    }
-
-    public List<UserIdUsernamesResponse> toUserIdUseramesList(List<UserRequest> userRequests) {
-        return this.mapList(userRequests, this::toUserIdUsernames);
-    }
-
-    public List<UsernameUserIdResponse> toUsernameUserIdList(List<UsernameUserId> usernameUserIdList) {
-        return this.mapList(usernameUserIdList, this::toUsernameUserId);
-    }
-
-    public List<UserIdProductIds> toUserIdProductIdsList(List<UserIdProductIdsRequest> userIdProductIdsRequestList) {
-        return this.mapList(userIdProductIdsRequestList, this::toUserIdProductIds);
+    public List<UserResponse> toResponseList(List<User> users) {
+        return MapperUtils.mapList(users, this::toResponse);
     }
 
 }

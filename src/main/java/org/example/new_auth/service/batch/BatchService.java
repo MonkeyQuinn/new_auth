@@ -1,12 +1,8 @@
 package org.example.new_auth.service.batch;
 
 import org.example.new_auth.batch.BatchResult;
-import org.example.new_auth.domain.Permission;
-import org.example.new_auth.domain.User;
-import org.example.new_auth.domain.UserIdProductIds;
-import org.example.new_auth.domain.UsernameUserId;
+import org.example.new_auth.domain.*;
 import org.example.new_auth.dto.request.SandRecreateRequest;
-import org.example.new_auth.dto.response.UsernameMatchResponse;
 
 import java.util.List;
 
@@ -36,7 +32,7 @@ public interface BatchService {
 
     BatchResult<Long> filterUserIdsByOperations(List<Long> ids, List<String> operations);
 
-    BatchResult<UsernameMatchResponse> groupUserIdentitiesByUsernames(List<String> usernames);
+    BatchResult<MultiUsernameUser> groupUserIdentitiesByUsernames(List<String> usernames);
 
     BatchResult<User> saveUsers(List<User> users);
 

@@ -6,5 +6,5 @@ import tools.jackson.databind.annotation.JsonNaming;
 import java.util.List;
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public record UsernameMatchResponse(String username, Long userId, List<String> usernames) {
+public record MultiUsernameUserResponse(String matchedUsername, Long userId, List<String> usernames) {
 }

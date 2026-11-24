@@ -1,13 +1,8 @@
 package org.example.new_auth.service.auth;
 
 import org.example.new_auth.batch.BatchResult;
-import org.example.new_auth.batch.UserItem;
-import org.example.new_auth.domain.Permission;
-import org.example.new_auth.domain.User;
-import org.example.new_auth.domain.UserIdProductIds;
-import org.example.new_auth.domain.UsernameUserId;
+import org.example.new_auth.domain.*;
 import org.example.new_auth.dto.request.SandRecreateRequest;
-import org.example.new_auth.dto.response.UsernameMatchResponse;
 import org.example.new_auth.repository.UserSqlRepository;
 import org.example.new_auth.service.batch.BatchService;
 import org.example.new_auth.service.tarantool.TarantoolService;
@@ -107,7 +102,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public BatchResult<UsernameMatchResponse> groupUserIdentitiesByUsernames(List<String> usernames) {
+    public BatchResult<MultiUsernameUser> groupUserIdentitiesByUsernames(List<String> usernames) {
         return batchService.groupUserIdentitiesByUsernames(usernames);
     }
 

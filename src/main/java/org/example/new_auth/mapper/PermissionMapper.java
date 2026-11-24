@@ -5,14 +5,15 @@ import org.example.new_auth.dto.request.PermissionRequest;
 import org.example.new_auth.dto.response.PermissionResponse;
 import org.example.new_auth.external.request.ExternalPermissionRequest;
 import org.example.new_auth.external.response.ExternalPermissionResponse;
+import org.example.new_auth.util.MapperUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
-public class PermissionMapper extends BaseMapper {
+public class PermissionMapper {
 
-    public Permission toDomain(ExternalPermissionResponse response) {
+    public Permission fromResponse(ExternalPermissionResponse response) {
         return new Permission(
                 response.area(),
                 response.topic(),
@@ -20,7 +21,7 @@ public class PermissionMapper extends BaseMapper {
         );
     }
 
-    public Permission toDomain(PermissionRequest request) {
+    public Permission fromRequest(PermissionRequest request) {
         return new Permission(
                 request.area(),
                 request.topic(),
@@ -28,7 +29,7 @@ public class PermissionMapper extends BaseMapper {
         );
     }
 
-    public PermissionResponse toDto(Permission permission) {
+    public PermissionResponse toResponse(Permission permission) {
         return new PermissionResponse(
                 permission.area(),
                 permission.topic(),
@@ -36,7 +37,7 @@ public class PermissionMapper extends BaseMapper {
         );
     }
 
-    public ExternalPermissionRequest toExternal(Permission permission) {
+    public ExternalPermissionRequest toRequest(Permission permission) {
         return new ExternalPermissionRequest(
                 permission.area(),
                 permission.topic(),
@@ -44,8 +45,8 @@ public class PermissionMapper extends BaseMapper {
         );
     }
 
-    public List<Permission> toDomainList(List<PermissionRequest> permissions) {
-        return this.mapList(permissions, this::toDomain);
+    public List<Permission> fromRequestList(List<PermissionRequest> permissions) {
+        return MapperUtils.mapList(permissions, this::fromRequest);
     }
 
 }

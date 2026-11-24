@@ -13,10 +13,10 @@ public class LoginMapper {
         this.tokenMapper = tokenMapper;
     }
 
-    public Login toDomain(ExternalLoginResponse response) {
+    public Login fromResponse(ExternalLoginResponse response) {
         return new Login(
-                tokenMapper.toDomain(response.access()),
-                tokenMapper.toDomain(response.refresh()),
+                tokenMapper.fromResponse(response.access()),
+                tokenMapper.fromResponse(response.refresh()),
                 response.passChangeNeeded()
         );
     }

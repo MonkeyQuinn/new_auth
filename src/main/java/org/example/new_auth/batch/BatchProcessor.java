@@ -27,10 +27,9 @@ public class BatchProcessor {
     public <T, R> BatchResult<R> batchMap(Collection<T> source,
                                           Function<T, R> mapper,
                                           Function<T, String> itemExtractor,
-                                          Function<T, String> refExtractor) {
-
-        int pack = getParams().pack();
-        int interval = getParams().interval();
+                                          Function<T, String> refExtractor,
+                                          int pack,
+                                          int interval) {
 
         List<R> success = new ArrayList<>();
         List<BatchError> errors = new ArrayList<>();
@@ -55,6 +54,19 @@ public class BatchProcessor {
 
         log.debug("Batch processed: {} success, {} errors, {} total\n", success.size(), errors.size(), processed);
         return new BatchResult<>(success, errors);
+
+    }
+
+    public <T, R> BatchResult<R> batchMap(Collection<T> source,
+                                          Function<T, R> mapper,
+                                          Function<T, String> itemExtractor,
+                                          Function<T, String> refExtractor) {
+
+        int pack = getParams().pack();
+        int interval = getParams().interval();
+
+        return batchMap(source, mapper, itemExtractor, refExtractor, pack, interval);
+
     }
 
     private void handleError(Exception e, BatchError batchError) {

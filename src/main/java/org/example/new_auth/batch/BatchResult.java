@@ -42,4 +42,8 @@ public record BatchResult<T>(List<T> success, List<BatchError> errors) {
         }
     }
 
+    public boolean hasFailures() {
+        return errors != null && !errors.isEmpty();
+    }
+
 }

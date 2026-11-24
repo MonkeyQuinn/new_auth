@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class TokenMapper {
 
-    public Token toDomain(ExternalTokenResponse response) {
+    public Token fromResponse(ExternalTokenResponse response) {
         return new Token(
                 response.hash(),
                 response.expiresAt(),

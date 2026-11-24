@@ -12,5 +12,5 @@ public record ExternalUserResponse(Long id, Integer clientId, Byte status, Boole
                                    Boolean twoFactorEnabled, Boolean inheritClient, String firstname, String lastname,
                                    Integer refreshTokenTtl, Integer accessTokenTtl, Integer tokenCount,
                                    List<String> usernames, List<ExternalPermissionResponse> permissions,
-                                   List<ExternalRoleResponse> roles) {
+                                   List<ExternalRoleResponse> roles, String password) {
 }

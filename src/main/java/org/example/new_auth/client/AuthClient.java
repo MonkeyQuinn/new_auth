@@ -33,7 +33,7 @@ public class AuthClient {
     }
 
     public Login login() {
-        return loginMapper.toDomain(exchangePostRequest(
+        return loginMapper.fromResponse(exchangePostRequest(
                 ExternalLoginResponse.class,
                 properties.endpoints().login(),
                 loginHeaders(),
@@ -42,7 +42,7 @@ public class AuthClient {
     }
 
     public User getUser(String username, String token) {
-        return userMapper.toDomain(exchangeGetRequest(
+        return userMapper.fromResponse(exchangeGetRequest(
                 ExternalUserResponse.class,
                 properties.endpoints().username(),
                 clientHeaders(token),
@@ -51,7 +51,7 @@ public class AuthClient {
     }
 
     public User getUser(Long userId, String token) {
-        return userMapper.toDomain(exchangeGetRequest(
+        return userMapper.fromResponse(exchangeGetRequest(
                 ExternalUserResponse.class,
                 properties.endpoints().userId(),
                 clientHeaders(token),
@@ -60,11 +60,11 @@ public class AuthClient {
     }
 
     public User saveUser(User user, String token) {
-        return userMapper.toDomain(exchangePostRequest(
+        return userMapper.fromResponse(exchangePostRequest(
                 ExternalUserResponse.class,
                 properties.endpoints().save(),
                 clientHeaders(token),
-                userMapper.toExternal(user)
+                userMapper.toRequest(user)
         ));
     }
 
